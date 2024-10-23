@@ -2,15 +2,19 @@
 
 using namespace std;
 
-enum class MenuChoice { Search,
-                        Sort,
-                        Exit,
-                        Invalid };
+enum class MenuChoice {
+    Search,
+    Sort,
+    Exit,
+    InvalidChoice
+};
 
-enum class SearchChoice { Linear,
-                          Binary,
-                          Back,
-                          Invalid };
+enum class SearchChoice {
+    Linear,
+    Binary,
+    BackToMain,
+    InvalidChoice
+};
 
 enum class SortChoice {
     Simple,
@@ -18,8 +22,8 @@ enum class SortChoice {
     Selection,
     Insertion,
     BinaryInsertion,
-    Back,
-    Invalid
+    BackToMain,
+    InvalidChoice
 };
 
 // Menu declarations
@@ -71,13 +75,13 @@ int main(int argc, char const *argv[]) {
                             binarySearch(array, size);
                             break;
 
-                        case SearchChoice::Back:
+                        case SearchChoice::BackToMain:
                             break;
 
                         default:
                             cout << "Please enter a valid option!" << endl;
                     }
-                } while (searchMenuChoice != SearchChoice::Back);
+                } while (searchMenuChoice != SearchChoice::BackToMain);
 
                 break;
 
@@ -117,13 +121,13 @@ int main(int argc, char const *argv[]) {
                             binaryInsertionSort(array, size);
                             break;
 
-                        case SortChoice::Back:
+                        case SortChoice::BackToMain:
                             break;
 
                         default:
                             cout << "Please enter a valid option!" << endl;
                     }
-                } while (sortMenuChoice != SortChoice::Back);
+                } while (sortMenuChoice != SortChoice::BackToMain);
 
                 break;
 
@@ -161,7 +165,7 @@ MenuChoice getMenuChoice() {
             return MenuChoice::Exit;
     }
 
-    return MenuChoice::Invalid;
+    return MenuChoice::InvalidChoice;
 }
 
 SearchChoice getSearchChoice() {
@@ -171,7 +175,7 @@ SearchChoice getSearchChoice() {
     cout << "=========================" << endl;
     cout << "1. Linear Search" << endl;
     cout << "2. Binary Search" << endl;
-    cout << "3. Back" << endl;
+    cout << "3. BackToMain" << endl;
     cout << "=========================" << endl;
     cout << "Enter your choice: ";
     cin >> choice;
@@ -182,10 +186,10 @@ SearchChoice getSearchChoice() {
         case 2:
             return SearchChoice::Binary;
         case 3:
-            return SearchChoice::Back;
+            return SearchChoice::BackToMain;
     }
 
-    return SearchChoice::Invalid;
+    return SearchChoice::InvalidChoice;
 }
 
 SortChoice getSortChoice() {
@@ -198,7 +202,7 @@ SortChoice getSortChoice() {
     cout << "3. Selection Sort" << endl;
     cout << "4. Insertion Sort" << endl;
     cout << "5. Binary Insertion Sort" << endl;
-    cout << "6. Back" << endl;
+    cout << "6. BackToMain" << endl;
     cout << "=========================" << endl;
     cout << "Enter your choice: ";
     cin >> choice;
@@ -215,10 +219,10 @@ SortChoice getSortChoice() {
         case 5:
             return SortChoice::BinaryInsertion;
         case 6:
-            return SortChoice::Back;
+            return SortChoice::BackToMain;
     }
 
-    return SortChoice::Invalid;
+    return SortChoice::InvalidChoice;
 }
 
 // ----------- ALGORITHM DEFINITIONS -----------
