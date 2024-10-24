@@ -175,7 +175,7 @@ SearchChoice getSearchChoice() {
     cout << "=========================" << endl;
     cout << "1. Linear Search" << endl;
     cout << "2. Binary Search" << endl;
-    cout << "3. BackToMain" << endl;
+    cout << "3. Back" << endl;
     cout << "=========================" << endl;
     cout << "Enter your choice: ";
     cin >> choice;
@@ -202,7 +202,7 @@ SortChoice getSortChoice() {
     cout << "3. Selection Sort" << endl;
     cout << "4. Insertion Sort" << endl;
     cout << "5. Binary Insertion Sort" << endl;
-    cout << "6. BackToMain" << endl;
+    cout << "6. Back" << endl;
     cout << "=========================" << endl;
     cout << "Enter your choice: ";
     cin >> choice;

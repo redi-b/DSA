@@ -91,7 +91,7 @@ class arrayList {
             }
         }
 
-        return -1;
+        throw runtime_error("Element not found!");
     };
 
     void sort() {
