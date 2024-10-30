@@ -4,6 +4,12 @@
 
 using namespace std;
 
+#if _WIN32
+string clearCommand = "cls";
+#else
+string clearCommand = "clear";
+#endif
+
 enum class MenuChoice {
     Insert,
     Delete,
@@ -36,7 +42,8 @@ InsertChoice getInsertChoice();
 DeleteChoice getDeleteChoice();
 
 int main(int argc, char const* argv[]) {
-    system("cls");
+    system(clearCommand.c_str());
+
     arrayList<int> list = arrayList<int>();
 
     MenuChoice menuChoice;
