@@ -105,10 +105,6 @@ pickType:
                 deleteFromList(list);
                 break;
 
-            case MenuChoice::GetSize:
-                cout << "Size: " << list->getSize() << endl;
-                break;
-
             case MenuChoice::Search: {
                 int value, index;
                 cout << "Enter element to search for: ";
@@ -120,6 +116,10 @@ pickType:
                     cout << "Element not found!" << endl;
             } break;
 
+            case MenuChoice::GetSize:
+                cout << "Size: " << list->getSize() << endl;
+                break;
+                
             case MenuChoice::BackToType:
                 delete list;
                 goto pickType;
@@ -174,8 +174,8 @@ MenuChoice getMenuChoice(LinkedList<int> *list) {
     cout << "=========================" << endl;
     cout << "1. Insert value" << endl;
     cout << "2. Delete value" << endl;
-    cout << "3. Get size" << endl;
-    cout << "4. Search" << endl;
+    cout << "3. Search" << endl;
+    cout << "4. Get size" << endl;
     cout << "5. Back" << endl;
     cout << "6. Exit" << endl;
     cout << "=========================" << endl;
@@ -188,9 +188,9 @@ MenuChoice getMenuChoice(LinkedList<int> *list) {
         case 2:
             return MenuChoice::Delete;
         case 3:
-            return MenuChoice::GetSize;
-        case 4:
             return MenuChoice::Search;
+        case 4:
+            return MenuChoice::GetSize;
         case 5:
             return MenuChoice::BackToType;
         case 6:
