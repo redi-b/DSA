@@ -1,14 +1,50 @@
+#include <iostream>
+
 template <typename Type>
-struct Node {
+struct SNode {
     Type data;
-    Node* next;
+    SNode* next;
 };
 
 template <typename Type>
-class SinglyLinkedList {
-   private:
-    Node<Type>* head;
+struct DNode {
+    Type data;
+    DNode* next;
+    DNode* prev;
+};
+
+// Abstract Linked List Class
+template <typename Type>
+class LinkedList {
+   protected:
     int size;
+
+   public:
+    virtual void insertValue(Type value, int index = -1) {
+        std::cout << "Function not implemented!" << std::endl;
+    }
+    virtual void deleteByIndex(int index) {
+        std::cout << "Function not implemented!" << std::endl;
+    }
+    virtual void deleteByValue(int value) {
+        std::cout << "Function not implemented!" << std::endl;
+    };
+    virtual int search(Type value) {
+        return -1;
+    };
+    virtual void print() {
+        std::cout << "[]" << std::endl;
+    }
+
+    int getSize() {
+        return size;
+    }
+};
+
+template <typename Type>
+class SinglyLinkedList : public LinkedList<Type> {
+   private:
+    SNode<Type>* head;
 
    public:
     SinglyLinkedList(int size = 0) {
@@ -17,7 +53,7 @@ class SinglyLinkedList {
     }
 
     ~SinglyLinkedList() {
-        Node<Type>* temp = head;
+        SNode<Type>* temp = head;
         while (head != nullptr) {
             head = head->next;
             delete temp;
@@ -26,7 +62,12 @@ class SinglyLinkedList {
     }
 
     void insertValue(Type value, int index = -1) {
-        Node<Type>* newNode = new Node<Type>();
+        if (index > this->size) {
+            std::cout << "Index out of bounds!" << std::endl;
+            return;
+        }
+
+        SNode<Type>* newNode = new SNode<Type>();
         newNode->data = value;
         newNode->next = nullptr;
 
@@ -37,14 +78,14 @@ class SinglyLinkedList {
             if (head == nullptr) {
                 head = newNode;
             } else {
-                Node<Type>* temp = head;
+                SNode<Type>* temp = head;
                 while (temp->next != nullptr) {
                     temp = temp->next;
                 }
                 temp->next = newNode;
             }
         } else {
-            Node<Type>* temp = head;
+            SNode<Type>* temp = head;
             for (int i = 0; i < index - 1; i++) {
                 if (temp == nullptr) {
                     std::cout << "Index out of range!" << std::endl;
@@ -55,16 +96,26 @@ class SinglyLinkedList {
             newNode->next = temp->next;
             temp->next = newNode;
         }
-        size++;
+        this->size++;
     }
 
     void deleteByIndex(int index) {
+        if (this->size == 0) {
+            std::cout << "List is empty!" << std::endl;
+            return;
+        }
+
+        if (index >= this->size) {
+            std::cout << "Index out of range!" << std::endl;
+            return;
+        }
+
         if (index == 0) {
-            Node<Type>* temp = head;
+            SNode<Type>* temp = head;
             head = head->next;
             delete temp;
         } else {
-            Node<Type>* temp = head;
+            SNode<Type>* temp = head;
             for (int i = 0; i < index - 1; i++) {
                 if (temp == nullptr) {
                     std::cout << "Index out of range!" << std::endl;
@@ -72,36 +123,39 @@ class SinglyLinkedList {
                 }
                 temp = temp->next;
             }
-            Node<Type>* toDelete = temp->next;
+            SNode<Type>* toDelete = temp->next;
             temp->next = toDelete->next;
             delete toDelete;
         }
-        size--;
+        this->size--;
     }
 
     void deleteByValue(Type value) {
-        Node<Type>* temp = head;
-        if (temp->data == value) {
-            head = head->next;
-            delete temp;
-            size--;
-            return;
+        int index = this->search(value);
+
+        if (index != -1) {
+            this->deleteByIndex(index);
         }
-        while (temp->next != nullptr) {
-            if (temp->next->data == value) {
-                Node<Type>* toDelete = temp->next;
-                temp->next = toDelete->next;
-                delete toDelete;
-                size--;
-                return;
-            }
-            temp = temp->next;
-        }
+
         std::cout << "Value not found!" << std::endl;
     }
 
+    int search(Type value) {
+        if (this->size == 0) return -1;
+
+        int index = 0;
+        SNode<Type>* temp = head;
+        while (temp != nullptr) {
+            if (temp->data == value) return index;
+            temp = temp->next;
+            index++;
+        }
+
+        return -1;
+    }
+
     void print() {
-        Node<Type>* temp = head;
+        SNode<Type>* temp = head;
         std::cout << "[";
         while (temp != nullptr) {
             std::cout << temp->data;
@@ -110,4 +164,50 @@ class SinglyLinkedList {
         }
         std::cout << "]" << std::endl;
     }
+};
+
+// TODO: Implementation
+template <typename Type>
+class DoublyLinkedList : public LinkedList<Type> {
+   private:
+    DNode<Type>* head;
+    DNode<Type>* tail;
+
+   public:
+    DoublyLinkedList(int size = 0) {
+        this->head = nullptr;
+        this->tail = nullptr;
+        this->size = size;
+    }
+    ~DoublyLinkedList() {
+        DNode<Type>* temp = head;
+        while (head != nullptr) {
+            head = head->next;
+            delete temp;
+            temp = head;
+        }
+    }
+};
+
+// TODO: Implementation
+template <typename Type>
+class CircularLinkedList : public LinkedList<Type> {
+   private:
+    SNode<Type>* head;
+
+   public:
+    CircularLinkedList() {}
+    ~CircularLinkedList() {}
+};
+
+// TODO: Implementation
+template <typename Type>
+class CircularDoublyLinkedList : public LinkedList<Type> {
+   private:
+    DNode<Type>* head;
+    DNode<Type>* tail;
+
+   public:
+    CircularDoublyLinkedList() {}
+    ~CircularDoublyLinkedList() {}
 };
