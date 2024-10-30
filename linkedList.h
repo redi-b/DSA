@@ -35,6 +35,7 @@ class LinkedList {
     virtual void print() {
         std::cout << "[]" << std::endl;
     }
+    virtual void printReverse() {}
 
     int getSize() {
         return size;
@@ -62,7 +63,7 @@ class SinglyLinkedList : public LinkedList<Type> {
     }
 
     void insertValue(Type value, int index = -1) {
-        if (index > this->size) {
+        if (index > this->size || index < -1) {
             std::cout << "Index out of bounds!" << std::endl;
             return;
         }
@@ -74,7 +75,7 @@ class SinglyLinkedList : public LinkedList<Type> {
         if (index == 0) {
             newNode->next = head;
             head = newNode;
-        } else if (index == -1) {
+        } else if (index == -1 || index == this->size) {
             if (head == nullptr) {
                 head = newNode;
             } else {
@@ -87,10 +88,6 @@ class SinglyLinkedList : public LinkedList<Type> {
         } else {
             SNode<Type>* temp = head;
             for (int i = 0; i < index - 1; i++) {
-                if (temp == nullptr) {
-                    std::cout << "Index out of range!" << std::endl;
-                    return;
-                }
                 temp = temp->next;
             }
             newNode->next = temp->next;
@@ -105,8 +102,8 @@ class SinglyLinkedList : public LinkedList<Type> {
             return;
         }
 
-        if (index >= this->size) {
-            std::cout << "Index out of range!" << std::endl;
+        if (index >= this->size || index < 0) {
+            std::cout << "Index out of bounds!" << std::endl;
             return;
         }
 
@@ -117,10 +114,6 @@ class SinglyLinkedList : public LinkedList<Type> {
         } else {
             SNode<Type>* temp = head;
             for (int i = 0; i < index - 1; i++) {
-                if (temp == nullptr) {
-                    std::cout << "Index out of range!" << std::endl;
-                    return;
-                }
                 temp = temp->next;
             }
             SNode<Type>* toDelete = temp->next;
@@ -135,6 +128,7 @@ class SinglyLinkedList : public LinkedList<Type> {
 
         if (index != -1) {
             this->deleteByIndex(index);
+            return;
         }
 
         std::cout << "Value not found!" << std::endl;
@@ -186,6 +180,126 @@ class DoublyLinkedList : public LinkedList<Type> {
             delete temp;
             temp = head;
         }
+    }
+
+    void insertValue(Type value, int index = -1) {
+        if (index > this->size || index < -1) {
+            std::cout << "Index out of bounds!" << std::endl;
+            return;
+        }
+
+        DNode<Type>* newNode = new DNode<Type>();
+        newNode->data = value;
+        newNode->next = nullptr;
+        newNode->prev = nullptr;
+
+        if (head == nullptr && tail == nullptr) {
+            head = newNode;
+            tail = newNode;
+            this->size++;
+            return;
+        }
+
+        if (index == 0) {
+            DNode<Type>* temp = head;
+            newNode->next = temp;
+            newNode->prev = nullptr;
+            temp->prev = newNode;
+            head = newNode;
+        } else if (index == -1 || index == this->size) {
+            DNode<Type>* temp = tail;
+            newNode->next = nullptr;
+            newNode->prev = temp;
+            temp->next = newNode;
+            tail = newNode;
+        } else {
+            DNode<Type>* temp = head;
+            for (int i = 0; i < index - 1; i++) {
+                temp = temp->next;
+            }
+            newNode->next = temp->next;
+            temp->next->prev = newNode;
+            temp->next = newNode;
+            newNode->prev = temp;
+        }
+        this->size++;
+    }
+
+    void deleteByIndex(int index) {
+        if (index >= this->size || index < 0) {
+            std::cout << "Index out of bounds!" << std::endl;
+            return;
+        }
+
+        if (index == 0) {
+            DNode<Type>* toDelete = head;
+            head = head->next;
+            head->prev = nullptr;
+            delete toDelete;
+        } else if (index == this->size - 1) {
+            DNode<Type>* toDelete = tail;
+            tail = tail->prev;
+            tail->next = nullptr;
+            delete toDelete;
+        } else {
+            DNode<Type>* temp = head;
+            for (int i = 0; i < index - 1; i++) {
+                temp = temp->next;
+            }
+            DNode<Type>* toDelete = temp->next;
+            toDelete->next->prev = temp;
+            temp->next = toDelete->next;
+            delete toDelete;
+        }
+        this->size--;
+    }
+
+    void deleteByValue(Type value) {
+        int index = this->search(value);
+
+        if (index != -1) {
+            this->deleteByIndex(index);
+            return;
+        }
+
+        std::cout << "Element not found!" << std::endl;
+    }
+
+    int search(Type value) {
+        if (this->size == 0) return -1;
+
+        int index = 0;
+        DNode<Type>* temp = head;
+        while (temp != nullptr) {
+            if (temp->data == value) return index;
+            temp = temp->next;
+            index++;
+        }
+
+        return -1;
+    }
+
+    void print() {
+        std::cout << "[";
+        DNode<Type>* temp = head;
+        while (temp != nullptr) {
+            std::cout << temp->data;
+            temp = temp->next;
+            if (temp != nullptr) std::cout << " <--> ";
+        }
+        std::cout << "]" << std::endl;
+    }
+
+    void printReverse() {
+        if (this->size <= 1) return;
+        std::cout << "[";
+        DNode<Type>* temp = tail;
+        while (temp != nullptr) {
+            std::cout << temp->data;
+            temp = temp->prev;
+            if (temp != nullptr) std::cout << " <--> ";
+        }
+        std::cout << "] - (reverse)" << std::endl;
     }
 };
 

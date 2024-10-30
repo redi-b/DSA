@@ -70,10 +70,9 @@ pickType:
             cout << "Singly Linked List Created!" << endl;
             break;
         } else if (listType == LinkedListChoice::DoublyLinked) {
-            cout << "Not Implemented Yet!" << endl;
-            // list = new DoublyLinkedList<int>();
-            // cout << "Doubly Linked List Created!" << endl;
-            // break;
+            list = new DoublyLinkedList<int>();
+            cout << "Doubly Linked List Created!" << endl;
+            break;
         } else if (listType == LinkedListChoice::CircularLinked) {
             cout << "Not Implemented Yet!" << endl;
             // list = new CircularLinkedList<int>();
@@ -169,6 +168,7 @@ MenuChoice getMenuChoice(LinkedList<int> *list) {
 
     cout << endl;
     list->print();
+    list->printReverse();
     cout << "=========================" << endl;
     cout << "        Main Menu        " << endl;
     cout << "=========================" << endl;
