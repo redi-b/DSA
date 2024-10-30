@@ -42,9 +42,14 @@ class arrayList {
     };
 
     void insertValue(Type value, int index = -1) {
+        if (index > size) {
+            cout << "Index out of bounds!" << endl;
+            return;
+        }
+
         if (size == capacity) grow();
 
-        if (index == -1) {
+        if (size == index || index == -1) {
             array[size] = value;
         } else {
             for (int i = size; i > index; i--) {

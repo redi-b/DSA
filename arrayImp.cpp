@@ -78,7 +78,7 @@ int main(int argc, char const* argv[]) {
                             int value;
                             cout << "Enter value to insert: ";
                             cin >> value;
-                            list.insertValue(value);
+                            list.insertValue(value, list.getSize());
                             list.print();
                         } break;
 
