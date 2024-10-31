@@ -105,12 +105,12 @@ pickType:
                 break;
 
             case MenuChoice::Search: {
-                int value, index;
+                int value, pos;
                 cout << "Enter element to search for: ";
                 cin >> value;
-                index = list->search(value);
-                if (index != -1)
-                    cout << "'" << value << "' is found at position '" << index << "'" << endl;
+                pos = list->search(value);
+                if (pos != -1)
+                    cout << "'" << value << "' is found at position '" << pos << "'" << endl;
                 else
                     cout << "Element not found!" << endl;
             } break;
@@ -272,12 +272,12 @@ void insertToList(LinkedList<int> *list) {
             } break;
 
             case InsertChoice::Index: {
-                int value, index;
+                int pos, value;
+                cout << "Enter position to insert at: ";
+                cin >> pos;
                 cout << "Enter value to insert: ";
                 cin >> value;
-                cout << "Enter index to insert: ";
-                cin >> index;
-                list->insertValue(value, index);
+                list->insertValue(value, pos);
                 list->print();
             } break;
 
@@ -304,20 +304,20 @@ void deleteFromList(LinkedList<int> *list) {
 
         switch (deleteChoice) {
             case DeleteChoice::Start:
-                list->deleteByIndex(0);
+                list->deleteByPosition(0);
                 list->print();
                 break;
 
             case DeleteChoice::Index: {
-                int index;
-                cout << "Enter index to delete: ";
-                cin >> index;
-                list->deleteByIndex(index);
+                int pos;
+                cout << "Enter position to delete at: ";
+                cin >> pos;
+                list->deleteByPosition(pos);
                 list->print();
             } break;
 
             case DeleteChoice::End:
-                list->deleteByIndex(list->getSize() - 1);
+                list->deleteByPosition(list->getSize() - 1);
                 list->print();
                 break;
 

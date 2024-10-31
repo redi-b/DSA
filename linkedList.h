@@ -23,7 +23,7 @@ class LinkedList {
     virtual void insertValue(Type value, int index = -1) {
         std::cout << "Function not implemented!" << std::endl;
     }
-    virtual void deleteByIndex(int index) {
+    virtual void deleteByPosition(int index) {
         std::cout << "Function not implemented!" << std::endl;
     }
     virtual void deleteByValue(int value) {
@@ -72,7 +72,7 @@ class SinglyLinkedList : public LinkedList<Type> {
         newNode->data = value;
         newNode->next = nullptr;
 
-        if (index == 0) {
+        if (index == 1) {
             newNode->next = head;
             head = newNode;
         } else if (index == -1 || index == this->size) {
@@ -87,7 +87,7 @@ class SinglyLinkedList : public LinkedList<Type> {
             }
         } else {
             SNode<Type>* temp = head;
-            for (int i = 0; i < index - 1; i++) {
+            for (int i = 1; i <= index - 1; i++) {
                 temp = temp->next;
             }
             newNode->next = temp->next;
@@ -96,7 +96,7 @@ class SinglyLinkedList : public LinkedList<Type> {
         this->size++;
     }
 
-    void deleteByIndex(int index) {
+    void deleteByPosition(int index) {
         if (this->size == 0) {
             std::cout << "List is empty!" << std::endl;
             return;
@@ -113,7 +113,7 @@ class SinglyLinkedList : public LinkedList<Type> {
             delete temp;
         } else {
             SNode<Type>* temp = head;
-            for (int i = 0; i < index - 1; i++) {
+            for (int i = 1; i <= index - 1; i++) {
                 temp = temp->next;
             }
             SNode<Type>* toDelete = temp->next;
@@ -127,7 +127,7 @@ class SinglyLinkedList : public LinkedList<Type> {
         int index = this->search(value);
 
         if (index != -1) {
-            this->deleteByIndex(index);
+            this->deleteByPosition(index);
             return;
         }
 
@@ -158,9 +158,33 @@ class SinglyLinkedList : public LinkedList<Type> {
         }
         std::cout << "]" << std::endl;
     }
+
+    void printReverse() {
+        if (this->size <= 1) return;
+        SNode<Type>* temp1 = nullptr;
+        SNode<Type>* temp2 = head;
+
+        while (temp2->next != nullptr) {
+            temp1 = temp2;
+            temp2 = temp2->next;
+        }
+
+        std::cout << "[";
+        std::cout << temp2->data << " --> " << temp1->data;
+        SNode<Type>* temp3 = head;
+        for (int i = 0; i < this->size - 2; i++) {
+            while (temp3->next != temp1) {
+                temp3 = temp3->next;
+            }
+            std::cout << " --> " << temp3->data;
+            temp2 = temp1;
+            temp1 = temp3;
+            temp3 = head;
+        }
+        std::cout << "] - (reverse)" << std::endl;
+    }
 };
 
-// TODO: Implementation
 template <typename Type>
 class DoublyLinkedList : public LinkedList<Type> {
    private:
@@ -214,7 +238,7 @@ class DoublyLinkedList : public LinkedList<Type> {
             tail = newNode;
         } else {
             DNode<Type>* temp = head;
-            for (int i = 0; i < index - 1; i++) {
+            for (int i = 1; i <= index - 1; i++) {
                 temp = temp->next;
             }
             newNode->next = temp->next;
@@ -225,7 +249,7 @@ class DoublyLinkedList : public LinkedList<Type> {
         this->size++;
     }
 
-    void deleteByIndex(int index) {
+    void deleteByPosition(int index) {
         if (index >= this->size || index < 0) {
             std::cout << "Index out of bounds!" << std::endl;
             return;
@@ -243,7 +267,7 @@ class DoublyLinkedList : public LinkedList<Type> {
             delete toDelete;
         } else {
             DNode<Type>* temp = head;
-            for (int i = 0; i < index - 1; i++) {
+            for (int i = 1; i <= index - 1; i++) {
                 temp = temp->next;
             }
             DNode<Type>* toDelete = temp->next;
@@ -258,7 +282,7 @@ class DoublyLinkedList : public LinkedList<Type> {
         int index = this->search(value);
 
         if (index != -1) {
-            this->deleteByIndex(index);
+            this->deleteByPosition(index);
             return;
         }
 
@@ -303,15 +327,49 @@ class DoublyLinkedList : public LinkedList<Type> {
     }
 };
 
-// TODO: Implementation
+// TODO: Implementaion
 template <typename Type>
 class CircularLinkedList : public LinkedList<Type> {
    private:
-    SNode<Type>* head;
+    SNode<Type>* tail;
 
    public:
-    CircularLinkedList() {}
+    CircularLinkedList(int size = 0) {
+        this->tail = nullptr;
+        this->size = size;
+    }
     ~CircularLinkedList() {}
+
+    // void insertValue(Type value, int index = -1) {
+    //     if (index > this->size || index < -1) {
+    //         std::cout << "Index out of bounds!" << std::endl;
+    //         return;
+    //     }
+
+    //     SNode<Type>* newNode = new SNode<Type>();
+    //     newNode->value = value;
+    //     newNode->next = nullptr;
+
+    //     SNode<Type>* head = tail->next;
+
+    //     if (head == nullptr) {
+    //         tail->next = newNode;
+    //         this->size++;
+    //         return
+    //     }
+
+    //     if (index == 0) {
+    //         tail->next = newNode;
+    //         newNode->next = head;
+    //     } else if (index == -1 || index == this->size) {
+    //         tail->next = newNode;
+
+    //     } else {
+
+    //     }
+
+    // this->size++;
+    // }
 };
 
 // TODO: Implementation
