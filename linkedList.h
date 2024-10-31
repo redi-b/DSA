@@ -72,22 +72,25 @@ class SinglyLinkedList : public LinkedList<Type> {
         newNode->data = value;
         newNode->next = nullptr;
 
+        if (head == nullptr) {
+            head = newNode;
+            this->size++;
+            return;
+        }
+
         if (pos == 1) {
             newNode->next = head;
             head = newNode;
         } else if (pos == -1 || pos == this->size + 1) {
-            if (head == nullptr) {
-                head = newNode;
-            } else {
-                SNode<Type>* temp = head;
-                while (temp->next != nullptr) {
-                    temp = temp->next;
-                }
-                temp->next = newNode;
+            SNode<Type>* temp = head;
+            while (temp->next != nullptr) {
+                temp = temp->next;
             }
+            temp->next = newNode;
+
         } else {
             SNode<Type>* temp = head;
-            for (int i = 0; i < pos; i++) {
+            for (int i = 1; i < pos - 1; i++) {
                 temp = temp->next;
             }
             newNode->next = temp->next;
@@ -113,7 +116,7 @@ class SinglyLinkedList : public LinkedList<Type> {
             delete temp;
         } else {
             SNode<Type>* temp = head;
-            for (int i = 0; i < pos; i++) {
+            for (int i = 1; i < pos - 1; i++) {
                 temp = temp->next;
             }
             SNode<Type>* toDelete = temp->next;
@@ -238,7 +241,7 @@ class DoublyLinkedList : public LinkedList<Type> {
             tail = newNode;
         } else {
             DNode<Type>* temp = head;
-            for (int i = 0; i < pos; i++) {
+            for (int i = 1; i < pos - 1; i++) {
                 temp = temp->next;
             }
             newNode->next = temp->next;
@@ -272,7 +275,7 @@ class DoublyLinkedList : public LinkedList<Type> {
             delete toDelete;
         } else {
             DNode<Type>* temp = head;
-            for (int i = 0; i < pos; i++) {
+            for (int i = 1; i < pos - 1; i++) {
                 temp = temp->next;
             }
             DNode<Type>* toDelete = temp->next;
@@ -352,13 +355,15 @@ class CircularLinkedList : public LinkedList<Type> {
         }
 
         SNode<Type>* newNode = new SNode<Type>();
-        newNode->value = value;
+        newNode->data = value;
         newNode->next = nullptr;
 
-        SNode<Type>* head = tail->next;
+        SNode<Type>* head = (tail == nullptr || this->size == 1) ? tail : tail->next;
 
         if (head == nullptr) {
-            tail->next = newNode;
+            std::cout << "Added" << std::endl;
+            tail = newNode;
+            tail->next = tail;
             this->size++;
             return;
         }
@@ -368,10 +373,36 @@ class CircularLinkedList : public LinkedList<Type> {
             newNode->next = head;
         } else if (pos == -1 || pos == this->size + 1) {
             tail->next = newNode;
+            newNode->next = head;
+            tail = newNode;
         } else {
+            SNode<Type>* temp = head;
+            for (int i = 1; i < pos - 1; i++) {
+                temp = temp->next;
+            }
+            newNode->next = temp->next;
+            temp->next = newNode;
         }
 
         this->size++;
+    }
+
+    void print() {
+        if (tail == nullptr) {
+            std::cout << "[]" << std::endl;
+            return;
+        }
+
+        SNode<Type>* head = tail->next;
+        SNode<Type>* temp = head;
+
+        std::cout << "[";
+        while (temp->next != head) {
+            std::cout << temp->data;
+            temp = temp->next;
+            if (temp != head) std::cout << " --> ";
+        }
+        std::cout << tail->data << "]" << std::endl;
     }
 };
 

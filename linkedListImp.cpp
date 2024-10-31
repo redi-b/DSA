@@ -74,10 +74,9 @@ pickType:
             cout << "Doubly Linked List Created!" << endl;
             break;
         } else if (listType == LinkedListChoice::CircularLinked) {
-            cout << "Not Implemented Yet!" << endl;
-            // list = new CircularLinkedList<int>();
-            // cout << "Circular Linked List Created!" << endl;
-            // break;
+            list = new CircularLinkedList<int>();
+            cout << "Circular Linked List Created!" << endl;
+            break;
         } else if (listType == LinkedListChoice::CircularDoublyLinked) {
             cout << "Not Implemented Yet!" << endl;
             // list = new CircularDoublyLinkedList<int>();
