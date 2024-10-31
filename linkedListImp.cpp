@@ -267,7 +267,7 @@ void insertToList(LinkedList<int> *list) {
                 int value;
                 cout << "Enter value to insert: ";
                 cin >> value;
-                list->insertValue(value, 0);
+                list->insertValue(value, 1);
                 list->print();
             } break;
 
@@ -285,7 +285,7 @@ void insertToList(LinkedList<int> *list) {
                 int value;
                 cout << "Enter value to insert: ";
                 cin >> value;
-                list->insertValue(value);
+                list->insertValue(value, list->getSize() + 1);
                 list->print();
             } break;
 
@@ -304,7 +304,7 @@ void deleteFromList(LinkedList<int> *list) {
 
         switch (deleteChoice) {
             case DeleteChoice::Start:
-                list->deleteByPosition(0);
+                list->deleteByPosition(1);
                 list->print();
                 break;
 
@@ -317,7 +317,7 @@ void deleteFromList(LinkedList<int> *list) {
             } break;
 
             case DeleteChoice::End:
-                list->deleteByPosition(list->getSize() - 1);
+                list->deleteByPosition(list->getSize());
                 list->print();
                 break;
 

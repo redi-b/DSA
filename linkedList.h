@@ -20,10 +20,10 @@ class LinkedList {
     int size;
 
    public:
-    virtual void insertValue(Type value, int index = -1) {
+    virtual void insertValue(Type value, int pos = -1) {
         std::cout << "Function not implemented!" << std::endl;
     }
-    virtual void deleteByPosition(int index) {
+    virtual void deleteByPosition(int pos) {
         std::cout << "Function not implemented!" << std::endl;
     }
     virtual void deleteByValue(int value) {
@@ -62,9 +62,9 @@ class SinglyLinkedList : public LinkedList<Type> {
         }
     }
 
-    void insertValue(Type value, int index = -1) {
-        if (index > this->size || index < -1) {
-            std::cout << "Index out of bounds!" << std::endl;
+    void insertValue(Type value, int pos = -1) {
+        if (pos > (this->size + 1) || pos < -1) {
+            std::cout << "Invalid Position!" << std::endl;
             return;
         }
 
@@ -72,10 +72,10 @@ class SinglyLinkedList : public LinkedList<Type> {
         newNode->data = value;
         newNode->next = nullptr;
 
-        if (index == 1) {
+        if (pos == 1) {
             newNode->next = head;
             head = newNode;
-        } else if (index == -1 || index == this->size) {
+        } else if (pos == -1 || pos == this->size + 1) {
             if (head == nullptr) {
                 head = newNode;
             } else {
@@ -87,7 +87,7 @@ class SinglyLinkedList : public LinkedList<Type> {
             }
         } else {
             SNode<Type>* temp = head;
-            for (int i = 1; i <= index - 1; i++) {
+            for (int i = 0; i < pos; i++) {
                 temp = temp->next;
             }
             newNode->next = temp->next;
@@ -96,24 +96,24 @@ class SinglyLinkedList : public LinkedList<Type> {
         this->size++;
     }
 
-    void deleteByPosition(int index) {
+    void deleteByPosition(int pos) {
         if (this->size == 0) {
             std::cout << "List is empty!" << std::endl;
             return;
         }
 
-        if (index >= this->size || index < 0) {
-            std::cout << "Index out of bounds!" << std::endl;
+        if (pos >= this->size || pos < 1) {
+            std::cout << "Invalid Position!" << std::endl;
             return;
         }
 
-        if (index == 0) {
+        if (pos == 1) {
             SNode<Type>* temp = head;
             head = head->next;
             delete temp;
         } else {
             SNode<Type>* temp = head;
-            for (int i = 1; i <= index - 1; i++) {
+            for (int i = 0; i < pos; i++) {
                 temp = temp->next;
             }
             SNode<Type>* toDelete = temp->next;
@@ -124,10 +124,10 @@ class SinglyLinkedList : public LinkedList<Type> {
     }
 
     void deleteByValue(Type value) {
-        int index = this->search(value);
+        int pos = this->search(value);
 
-        if (index != -1) {
-            this->deleteByPosition(index);
+        if (pos != -1) {
+            this->deleteByPosition(pos);
             return;
         }
 
@@ -137,12 +137,12 @@ class SinglyLinkedList : public LinkedList<Type> {
     int search(Type value) {
         if (this->size == 0) return -1;
 
-        int index = 0;
+        int pos = 0;
         SNode<Type>* temp = head;
         while (temp != nullptr) {
-            if (temp->data == value) return index;
+            if (temp->data == value) return pos;
             temp = temp->next;
-            index++;
+            pos++;
         }
 
         return -1;
@@ -206,9 +206,9 @@ class DoublyLinkedList : public LinkedList<Type> {
         }
     }
 
-    void insertValue(Type value, int index = -1) {
-        if (index > this->size || index < -1) {
-            std::cout << "Index out of bounds!" << std::endl;
+    void insertValue(Type value, int pos = -1) {
+        if (pos > (this->size + 1) || pos < -1) {
+            std::cout << "Invalid Position!" << std::endl;
             return;
         }
 
@@ -224,13 +224,13 @@ class DoublyLinkedList : public LinkedList<Type> {
             return;
         }
 
-        if (index == 0) {
+        if (pos == 1) {
             DNode<Type>* temp = head;
             newNode->next = temp;
             newNode->prev = nullptr;
             temp->prev = newNode;
             head = newNode;
-        } else if (index == -1 || index == this->size) {
+        } else if (pos == -1 || pos == this->size + 1) {
             DNode<Type>* temp = tail;
             newNode->next = nullptr;
             newNode->prev = temp;
@@ -238,7 +238,7 @@ class DoublyLinkedList : public LinkedList<Type> {
             tail = newNode;
         } else {
             DNode<Type>* temp = head;
-            for (int i = 1; i <= index - 1; i++) {
+            for (int i = 0; i < pos; i++) {
                 temp = temp->next;
             }
             newNode->next = temp->next;
@@ -249,25 +249,30 @@ class DoublyLinkedList : public LinkedList<Type> {
         this->size++;
     }
 
-    void deleteByPosition(int index) {
-        if (index >= this->size || index < 0) {
-            std::cout << "Index out of bounds!" << std::endl;
+    void deleteByPosition(int pos) {
+        if (this->size == 0) {
+            std::cout << "List is empty!" << std::endl;
             return;
         }
 
-        if (index == 0) {
+        if (pos >= this->size || pos < 1) {
+            std::cout << "Invalid Position!" << std::endl;
+            return;
+        }
+
+        if (pos == 1) {
             DNode<Type>* toDelete = head;
             head = head->next;
             head->prev = nullptr;
             delete toDelete;
-        } else if (index == this->size - 1) {
+        } else if (pos == this->size) {
             DNode<Type>* toDelete = tail;
             tail = tail->prev;
             tail->next = nullptr;
             delete toDelete;
         } else {
             DNode<Type>* temp = head;
-            for (int i = 1; i <= index - 1; i++) {
+            for (int i = 0; i < pos; i++) {
                 temp = temp->next;
             }
             DNode<Type>* toDelete = temp->next;
@@ -279,10 +284,10 @@ class DoublyLinkedList : public LinkedList<Type> {
     }
 
     void deleteByValue(Type value) {
-        int index = this->search(value);
+        int pos = this->search(value);
 
-        if (index != -1) {
-            this->deleteByPosition(index);
+        if (pos != -1) {
+            this->deleteByPosition(pos);
             return;
         }
 
@@ -292,12 +297,12 @@ class DoublyLinkedList : public LinkedList<Type> {
     int search(Type value) {
         if (this->size == 0) return -1;
 
-        int index = 0;
+        int pos = 1;
         DNode<Type>* temp = head;
         while (temp != nullptr) {
-            if (temp->data == value) return index;
+            if (temp->data == value) return pos;
             temp = temp->next;
-            index++;
+            pos++;
         }
 
         return -1;
@@ -340,36 +345,34 @@ class CircularLinkedList : public LinkedList<Type> {
     }
     ~CircularLinkedList() {}
 
-    // void insertValue(Type value, int index = -1) {
-    //     if (index > this->size || index < -1) {
-    //         std::cout << "Index out of bounds!" << std::endl;
-    //         return;
-    //     }
+    void insertValue(Type value, int pos = -1) {
+        if (pos > (this->size + 1) || pos < -1) {
+            std::cout << "Invalid Position!" << std::endl;
+            return;
+        }
 
-    //     SNode<Type>* newNode = new SNode<Type>();
-    //     newNode->value = value;
-    //     newNode->next = nullptr;
+        SNode<Type>* newNode = new SNode<Type>();
+        newNode->value = value;
+        newNode->next = nullptr;
 
-    //     SNode<Type>* head = tail->next;
+        SNode<Type>* head = tail->next;
 
-    //     if (head == nullptr) {
-    //         tail->next = newNode;
-    //         this->size++;
-    //         return
-    //     }
+        if (head == nullptr) {
+            tail->next = newNode;
+            this->size++;
+            return;
+        }
 
-    //     if (index == 0) {
-    //         tail->next = newNode;
-    //         newNode->next = head;
-    //     } else if (index == -1 || index == this->size) {
-    //         tail->next = newNode;
+        if (pos == 1) {
+            tail->next = newNode;
+            newNode->next = head;
+        } else if (pos == -1 || pos == this->size + 1) {
+            tail->next = newNode;
+        } else {
+        }
 
-    //     } else {
-
-    //     }
-
-    // this->size++;
-    // }
+        this->size++;
+    }
 };
 
 // TODO: Implementation
