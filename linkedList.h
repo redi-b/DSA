@@ -53,6 +53,12 @@ class SinglyLinkedList : public LinkedList<Type> {
         this->size = size;
     }
 
+    SinglyLinkedList(std::initializer_list<Type> il) : SinglyLinkedList() {
+        for (Type value : il) {
+            this->insertValue(value, this->size + 1);
+        }
+    }
+
     ~SinglyLinkedList() {
         SNode<Type>* temp = head;
         while (head != nullptr) {
@@ -63,7 +69,7 @@ class SinglyLinkedList : public LinkedList<Type> {
     }
 
     void insertValue(Type value, int pos = -1) {
-        if (pos > (this->size + 1) || (pos < 0 && pos != -1)) {
+        if (pos > (this->size + 1) || (pos <= 0 && pos != -1)) {
             std::cout << "Invalid Position!" << std::endl;
             return;
         }
@@ -105,7 +111,7 @@ class SinglyLinkedList : public LinkedList<Type> {
             return;
         }
 
-        if (pos >= this->size || pos < 1) {
+        if (pos > this->size || pos < 1) {
             std::cout << "Invalid Position!" << std::endl;
             return;
         }
@@ -173,18 +179,42 @@ class SinglyLinkedList : public LinkedList<Type> {
         }
 
         std::cout << "[";
-        std::cout << temp2->data << " --> " << temp1->data;
+        std::cout << temp2->data << " <-- " << temp1->data;
         SNode<Type>* temp3 = head;
         for (int i = 0; i < this->size - 2; i++) {
             while (temp3->next != temp1) {
                 temp3 = temp3->next;
             }
-            std::cout << " --> " << temp3->data;
+            std::cout << " <-- " << temp3->data;
             temp2 = temp1;
             temp1 = temp3;
             temp3 = head;
         }
         std::cout << "] - (reverse)" << std::endl;
+    }
+
+    SinglyLinkedList<Type>& operator=(std::initializer_list<Type> il) {
+        while (this->size > 0) {
+            this->deleteByPosition(1);
+        }
+        this->head = nullptr;
+        for (Type value : il) {
+            this->insertValue(value, this->size + 1);
+        }
+        return *this;
+    }
+
+    SinglyLinkedList<Type>& operator=(SinglyLinkedList<Type>& list) {
+        while (this->size > 0) {
+            this->deleteByPosition(1);
+        }
+        this->head = nullptr;
+        SNode<Type>* temp = list.head;
+        while (temp != nullptr) {
+            this->insertValue(temp->data, this->size + 1);
+            temp = temp->next;
+        }
+        return *this;
     }
 };
 
@@ -200,6 +230,13 @@ class DoublyLinkedList : public LinkedList<Type> {
         this->tail = nullptr;
         this->size = size;
     }
+
+    DoublyLinkedList(std::initializer_list<Type> il) : DoublyLinkedList() {
+        for (Type value : il) {
+            this->insertValue(value, this->size + 1);
+        }
+    }
+
     ~DoublyLinkedList() {
         DNode<Type>* temp = head;
         while (head != nullptr) {
@@ -210,7 +247,7 @@ class DoublyLinkedList : public LinkedList<Type> {
     }
 
     void insertValue(Type value, int pos = -1) {
-        if (pos > (this->size + 1) || (pos < 0 && pos != -1)) {
+        if (pos > (this->size + 1) || (pos <= 0 && pos != -1)) {
             std::cout << "Invalid Position!" << std::endl;
             return;
         }
@@ -258,7 +295,7 @@ class DoublyLinkedList : public LinkedList<Type> {
             return;
         }
 
-        if (pos >= this->size || pos < 1) {
+        if (pos > this->size || pos < 1) {
             std::cout << "Invalid Position!" << std::endl;
             return;
         }
@@ -333,6 +370,30 @@ class DoublyLinkedList : public LinkedList<Type> {
         }
         std::cout << "] - (reverse)" << std::endl;
     }
+
+    DoublyLinkedList<Type>& operator=(std::initializer_list<Type> il) {
+        while (this->size > 0) {
+            this->deleteByPosition(1);
+        }
+        this->head = nullptr;
+        for (Type value : il) {
+            this->insertValue(value, this->size + 1);
+        }
+        return *this;
+    }
+
+    DoublyLinkedList<Type>& operator=(SinglyLinkedList<Type>& list) {
+        while (this->size > 0) {
+            this->deleteByPosition(1);
+        }
+        this->head = nullptr;
+        SNode<Type>* temp = list.head;
+        while (temp != nullptr) {
+            this->insertValue(temp->data, this->size + 1);
+            temp = temp->next;
+        }
+        return *this;
+    }
 };
 
 // TODO: Implementaion
@@ -346,6 +407,13 @@ class CircularLinkedList : public LinkedList<Type> {
         this->tail = nullptr;
         this->size = size;
     }
+
+    CircularLinkedList(std::initializer_list<Type> il) : CircularLinkedList() {
+        for (Type value : il) {
+            this->insertValue(value, this->size + 1);
+        }
+    }
+
     ~CircularLinkedList() {
         if (tail == nullptr) return;
 
@@ -362,7 +430,7 @@ class CircularLinkedList : public LinkedList<Type> {
     }
 
     void insertValue(Type value, int pos = -1) {
-        if (pos > (this->size + 1) || (pos < 0 && pos != -1)) {
+        if (pos > (this->size + 1) || (pos <= 0 && pos != -1)) {
             std::cout << "Invalid Position!" << std::endl;
             return;
         }
@@ -475,6 +543,20 @@ class CircularLinkedList : public LinkedList<Type> {
             if (temp != head) std::cout << " --> ";
         } while (temp != head);
         std::cout << "]" << std::endl;
+
+        if (this->size > 1) {
+            std::cout << " +";
+            int arrowLen = (this->size - 2) + 5 * (this->size - 1);
+            for (int i = 0; i < arrowLen; i++) {
+                std::cout << " ";
+            }
+            std::cout << "|" << std::endl;
+            std::cout << " +";
+            for (int i = 0; i < arrowLen; i++) {
+                std::cout << "-";
+            }
+            std::cout << "+" << std::endl;
+        }
     }
 
     void printReverse() {
@@ -490,17 +572,30 @@ class CircularLinkedList : public LinkedList<Type> {
         } while (temp2->next != head);
 
         SNode<Type>* temp3 = head;
-        std::cout << "[" << temp2->data << " --> " << temp1->data;
+        std::cout << "[" << temp2->data << " <-- " << temp1->data;
         for (int i = 0; i < this->size - 2; i++) {
             while (temp3->next != temp1) {
                 temp3 = temp3->next;
             }
-            std::cout << " --> " << temp3->data;
+            std::cout << " <-- " << temp3->data;
             temp2 = temp1;
             temp1 = temp3;
             temp3 = head;
         }
         std::cout << "] - (reverse)" << std::endl;
+        if (this->size > 1) {
+            std::cout << " |";
+            int arrowLen = (this->size - 2) + 5 * (this->size - 1);
+            for (int i = 0; i < arrowLen; i++) {
+                std::cout << " ";
+            }
+            std::cout << "+" << std::endl;
+            std::cout << " +";
+            for (int i = 0; i < arrowLen; i++) {
+                std::cout << "-";
+            }
+            std::cout << "+" << std::endl;
+        }
     }
 };
 
