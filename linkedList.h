@@ -63,7 +63,7 @@ class SinglyLinkedList : public LinkedList<Type> {
     }
 
     void insertValue(Type value, int pos = -1) {
-        if (pos > (this->size + 1) || (pos < 0 || pos != -1)) {
+        if (pos > (this->size + 1) || (pos < 0 && pos != -1)) {
             std::cout << "Invalid Position!" << std::endl;
             return;
         }
@@ -210,7 +210,7 @@ class DoublyLinkedList : public LinkedList<Type> {
     }
 
     void insertValue(Type value, int pos = -1) {
-        if (pos > (this->size + 1) || (pos < 0 || pos != -1)) {
+        if (pos > (this->size + 1) || (pos < 0 && pos != -1)) {
             std::cout << "Invalid Position!" << std::endl;
             return;
         }
@@ -362,7 +362,7 @@ class CircularLinkedList : public LinkedList<Type> {
     }
 
     void insertValue(Type value, int pos = -1) {
-        if (pos > (this->size + 1) || (pos < 0 || pos != -1)) {
+        if (pos > (this->size + 1) || (pos < 0 && pos != -1)) {
             std::cout << "Invalid Position!" << std::endl;
             return;
         }
@@ -475,6 +475,32 @@ class CircularLinkedList : public LinkedList<Type> {
             if (temp != head) std::cout << " --> ";
         } while (temp != head);
         std::cout << "]" << std::endl;
+    }
+
+    void printReverse() {
+        if (this->size <= 1) return;
+
+        SNode<Type>* head = tail->next;
+        SNode<Type>* temp1 = head;
+        SNode<Type>* temp2 = head;
+
+        do {
+            temp1 = temp2;
+            temp2 = temp2->next;
+        } while (temp2->next != head);
+
+        SNode<Type>* temp3 = head;
+        std::cout << "[" << temp2->data << " --> " << temp1->data;
+        for (int i = 0; i < this->size - 2; i++) {
+            while (temp3->next != temp1) {
+                temp3 = temp3->next;
+            }
+            std::cout << " --> " << temp3->data;
+            temp2 = temp1;
+            temp1 = temp3;
+            temp3 = head;
+        }
+        std::cout << "] - (reverse)" << std::endl;
     }
 };
 
