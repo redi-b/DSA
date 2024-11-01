@@ -63,7 +63,7 @@ class SinglyLinkedList : public LinkedList<Type> {
     }
 
     void insertValue(Type value, int pos = -1) {
-        if (pos > (this->size + 1) || pos < -1) {
+        if (pos > (this->size + 1) || (pos < 0 || pos != -1)) {
             std::cout << "Invalid Position!" << std::endl;
             return;
         }
@@ -210,7 +210,7 @@ class DoublyLinkedList : public LinkedList<Type> {
     }
 
     void insertValue(Type value, int pos = -1) {
-        if (pos > (this->size + 1) || pos < -1) {
+        if (pos > (this->size + 1) || (pos < 0 || pos != -1)) {
             std::cout << "Invalid Position!" << std::endl;
             return;
         }
@@ -346,10 +346,23 @@ class CircularLinkedList : public LinkedList<Type> {
         this->tail = nullptr;
         this->size = size;
     }
-    ~CircularLinkedList() {}
+    ~CircularLinkedList() {
+        if (tail == nullptr) return;
+
+        SNode<Type>* head = tail->next;
+        SNode<Type>* temp = head;
+
+        do {
+            SNode<Type>* nextNode = temp->next;
+            delete temp;
+            temp = nextNode;
+        } while (temp != head);
+
+        tail = nullptr;
+    }
 
     void insertValue(Type value, int pos = -1) {
-        if (pos > (this->size + 1) || pos < -1) {
+        if (pos > (this->size + 1) || (pos < 0 || pos != -1)) {
             std::cout << "Invalid Position!" << std::endl;
             return;
         }
@@ -387,6 +400,65 @@ class CircularLinkedList : public LinkedList<Type> {
         this->size++;
     }
 
+    void deleteByPosition(int pos) {
+        if (this->size == 0) {
+            std::cout << "List is empty!" << std::endl;
+            return;
+        }
+
+        if (pos > this->size || pos < 1) {
+            std::cout << "Invalid Position!" << std::endl;
+            return;
+        }
+
+        SNode<Type>* head = tail->next;
+
+        if (pos == 1) {
+            SNode<Type>* temp = head;
+            tail->next = temp->next;
+            delete temp;
+        } else {
+            SNode<Type>* temp = head;
+            for (int i = 1; i < pos - 1; i++) {
+                temp = temp->next;
+            }
+            SNode<Type>* toDelete = temp->next;
+            temp->next = toDelete->next;
+            delete toDelete;
+            if (pos == this->size) {
+                tail = temp;
+            }
+        }
+        this->size--;
+    }
+
+    void deleteByValue(Type value) {
+        int pos = this->search(value);
+
+        if (pos != -1) {
+            this->deleteByPosition(pos);
+            return;
+        }
+
+        std::cout << "Element not found!" << std::endl;
+    }
+
+    int search(Type value) {
+        if (this->size == 0) return -1;
+
+        SNode<Type>* head = tail->next;
+        SNode<Type>* temp = head;
+
+        int pos = 1;
+        do {
+            if (temp->data == value) return pos;
+            temp = temp->next;
+            pos++;
+        } while (temp != head);
+
+        return -1;
+    }
+
     void print() {
         if (tail == nullptr) {
             std::cout << "[]" << std::endl;
@@ -397,12 +469,12 @@ class CircularLinkedList : public LinkedList<Type> {
         SNode<Type>* temp = head;
 
         std::cout << "[";
-        while (temp->next != head) {
+        do {
             std::cout << temp->data;
             temp = temp->next;
             if (temp != head) std::cout << " --> ";
-        }
-        std::cout << tail->data << "]" << std::endl;
+        } while (temp != head);
+        std::cout << "]" << std::endl;
     }
 };
 
