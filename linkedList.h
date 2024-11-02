@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include <iostream>
 
 template <typename Type>
@@ -39,6 +41,11 @@ class LinkedList {
 
     int getSize() {
         return size;
+    }
+    void clear() {
+        while (this->size > 0) {
+            this->deleteByPosition(1);
+        }
     }
 };
 
@@ -194,9 +201,7 @@ class SinglyLinkedList : public LinkedList<Type> {
     }
 
     SinglyLinkedList<Type>& operator=(std::initializer_list<Type> il) {
-        while (this->size > 0) {
-            this->deleteByPosition(1);
-        }
+        this->clear();
         this->head = nullptr;
         for (Type value : il) {
             this->insertValue(value, this->size + 1);
@@ -205,9 +210,7 @@ class SinglyLinkedList : public LinkedList<Type> {
     }
 
     SinglyLinkedList<Type>& operator=(SinglyLinkedList<Type>& list) {
-        while (this->size > 0) {
-            this->deleteByPosition(1);
-        }
+        this->clear();
         this->head = nullptr;
         SNode<Type>* temp = list.head;
         while (temp != nullptr) {
@@ -372,9 +375,7 @@ class DoublyLinkedList : public LinkedList<Type> {
     }
 
     DoublyLinkedList<Type>& operator=(std::initializer_list<Type> il) {
-        while (this->size > 0) {
-            this->deleteByPosition(1);
-        }
+        this->clear();
         this->head = nullptr;
         for (Type value : il) {
             this->insertValue(value, this->size + 1);
@@ -383,9 +384,7 @@ class DoublyLinkedList : public LinkedList<Type> {
     }
 
     DoublyLinkedList<Type>& operator=(SinglyLinkedList<Type>& list) {
-        while (this->size > 0) {
-            this->deleteByPosition(1);
-        }
+        this->clear();
         this->head = nullptr;
         SNode<Type>* temp = list.head;
         while (temp != nullptr) {
@@ -396,11 +395,33 @@ class DoublyLinkedList : public LinkedList<Type> {
     }
 };
 
-// TODO: Implementaion
 template <typename Type>
 class CircularLinkedList : public LinkedList<Type> {
    private:
     SNode<Type>* tail;
+
+    int calculateArrowLen() {
+        if (this->size <= 1) return 0;
+
+        int arrowLen = 5 * (this->size - 1);
+        int charLen = 0;
+        SNode<Type>* temp = tail->next;
+        do {
+            if constexpr (std::is_same_v<Type, std::string>) {
+                charLen += temp->data.length();
+            } else if constexpr (std::is_same_v<Type, char*>) {
+                charLen += strlen(temp->data);
+            } else if constexpr (std::is_arithmetic_v<Type>) {
+                charLen += std::to_string(temp->data).length();
+            } else {
+                return 0;
+            }
+
+            temp = temp->next;
+        } while (temp != tail->next);
+
+        return arrowLen + charLen - 2;
+    }
 
    public:
     CircularLinkedList(int size = 0) {
@@ -442,7 +463,6 @@ class CircularLinkedList : public LinkedList<Type> {
         SNode<Type>* head = (tail == nullptr || this->size == 1) ? tail : tail->next;
 
         if (head == nullptr) {
-            std::cout << "Added" << std::endl;
             tail = newNode;
             tail->next = tail;
             this->size++;
@@ -544,9 +564,10 @@ class CircularLinkedList : public LinkedList<Type> {
         } while (temp != head);
         std::cout << "]" << std::endl;
 
-        if (this->size > 1) {
+        int arrowLen = this->calculateArrowLen();
+        if (arrowLen > 0) {
             std::cout << " +";
-            int arrowLen = (this->size - 2) + 5 * (this->size - 1);
+            SNode<Type>* temp = head;
             for (int i = 0; i < arrowLen; i++) {
                 std::cout << " ";
             }
@@ -583,9 +604,10 @@ class CircularLinkedList : public LinkedList<Type> {
             temp3 = head;
         }
         std::cout << "] - (reverse)" << std::endl;
-        if (this->size > 1) {
+
+        int arrowLen = this->calculateArrowLen();
+        if (arrowLen > 0) {
             std::cout << " |";
-            int arrowLen = (this->size - 2) + 5 * (this->size - 1);
             for (int i = 0; i < arrowLen; i++) {
                 std::cout << " ";
             }
