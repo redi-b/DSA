@@ -1,6 +1,8 @@
 #include <string.h>
 
 #include <iostream>
+#include <type_traits>
+#include <typeinfo>
 
 template <typename Type>
 struct SNode {
@@ -15,11 +17,37 @@ struct DNode {
     DNode* prev;
 };
 
+// Trait to check if a type is streamable to cout using <<
+template <typename T, typename = void>
+struct is_streamable : std::false_type {};
+
+template <typename T>
+struct is_streamable<T, std::void_t<decltype(std::declval<std::ostream&>() << std::declval<T>())>> : std::true_type {};
+
+template <typename T>
+inline constexpr bool is_streamable_v = is_streamable<T>::value;
+
+// Trait to check if a type is comparable using ==
+template <typename T, typename = void>
+struct is_comparable : std::false_type {};
+
+template <typename T>
+struct is_comparable<T, std::void_t<decltype(std::declval<T>() == std::declval<T>())>> : std::true_type {};
+
+template <typename T>
+inline constexpr bool is_comparable_v = is_comparable<T>::value;
+
 // Abstract Linked List Class
 template <typename Type>
 class LinkedList {
    protected:
     int size;
+    std::string strip(const char* str) {
+        size_t len = strlen(str);
+        if (len <= 7) return str;
+
+        return std::string(str, 7) + "..";
+    }
 
    public:
     virtual void insertValue(Type value, int pos = -1) {
@@ -60,9 +88,17 @@ class SinglyLinkedList : public LinkedList<Type> {
         this->size = size;
     }
 
-    SinglyLinkedList(std::initializer_list<Type> il) : SinglyLinkedList() {
-        for (Type value : il) {
+    SinglyLinkedList(std::initializer_list<Type> list) : SinglyLinkedList() {
+        for (Type value : list) {
             this->insertValue(value, this->size + 1);
+        }
+    }
+
+    SinglyLinkedList(SinglyLinkedList<Type>& list) : SinglyLinkedList() {
+        SNode<Type>* temp = head;
+        while (temp != nullptr) {
+            this->insertValue(temp->data, this->size + 1);
+            temp = temp->next;
         }
     }
 
@@ -168,7 +204,11 @@ class SinglyLinkedList : public LinkedList<Type> {
         SNode<Type>* temp = head;
         std::cout << "[";
         while (temp != nullptr) {
-            std::cout << temp->data;
+            if constexpr (is_streamable_v<Type>) {
+                std::cout << temp->data;
+            } else {
+                std::cout << "<" << this->strip(typeid(Type).name()) << ">";
+            }
             temp = temp->next;
             if (temp != nullptr) std::cout << " --> ";
         }
@@ -186,13 +226,23 @@ class SinglyLinkedList : public LinkedList<Type> {
         }
 
         std::cout << "[";
-        std::cout << temp2->data << " <-- " << temp1->data;
+        if constexpr (is_streamable_v<Type>) {
+            std::cout << temp2->data << " <-- " << temp1->data;
+        } else {
+            std::cout << "<" << this->strip(typeid(Type).name()) << ">";
+            std::cout << " <-- ";
+            std::cout << "<" << this->strip(typeid(Type).name()) << ">";
+        }
         SNode<Type>* temp3 = head;
         for (int i = 0; i < this->size - 2; i++) {
             while (temp3->next != temp1) {
                 temp3 = temp3->next;
             }
-            std::cout << " <-- " << temp3->data;
+            if constexpr (is_streamable_v<Type>) {
+                std::cout << " <-- " << temp3->data;
+            } else {
+                std::cout << " <-- " << "<" << this->strip(typeid(Type).name()) << ">";
+            }
             temp2 = temp1;
             temp1 = temp3;
             temp3 = head;
@@ -200,10 +250,10 @@ class SinglyLinkedList : public LinkedList<Type> {
         std::cout << "] - (reverse)" << std::endl;
     }
 
-    SinglyLinkedList<Type>& operator=(std::initializer_list<Type> il) {
+    SinglyLinkedList<Type>& operator=(std::initializer_list<Type> list) {
         this->clear();
         this->head = nullptr;
-        for (Type value : il) {
+        for (Type value : list) {
             this->insertValue(value, this->size + 1);
         }
         return *this;
@@ -234,9 +284,17 @@ class DoublyLinkedList : public LinkedList<Type> {
         this->size = size;
     }
 
-    DoublyLinkedList(std::initializer_list<Type> il) : DoublyLinkedList() {
-        for (Type value : il) {
+    DoublyLinkedList(std::initializer_list<Type> list) : DoublyLinkedList() {
+        for (Type value : list) {
             this->insertValue(value, this->size + 1);
+        }
+    }
+
+    DoublyLinkedList(DoublyLinkedList<Type>& list) : DoublyLinkedList() {
+        SNode<Type>* temp = head;
+        while (temp != nullptr) {
+            this->insertValue(temp->data, this->size + 1);
+            temp = temp->next;
         }
     }
 
@@ -342,10 +400,14 @@ class DoublyLinkedList : public LinkedList<Type> {
 
         int pos = 1;
         DNode<Type>* temp = head;
-        while (temp != nullptr) {
-            if (temp->data == value) return pos;
-            temp = temp->next;
-            pos++;
+        if constexpr (is_comparable_v<Type>) {
+            while (temp != nullptr) {
+                if (temp->data == value) return pos;
+                temp = temp->next;
+                pos++;
+            }
+        } else {
+            std::cerr << "Error: Type is not comparable using ==" << std::endl;
         }
 
         return -1;
@@ -355,7 +417,11 @@ class DoublyLinkedList : public LinkedList<Type> {
         std::cout << "[";
         DNode<Type>* temp = head;
         while (temp != nullptr) {
-            std::cout << temp->data;
+            if constexpr (is_streamable_v<Type>) {
+                std::cout << temp->data;
+            } else {
+                std::cout << "<" << this->strip(typeid(Type).name()) << ">";
+            }
             temp = temp->next;
             if (temp != nullptr) std::cout << " <--> ";
         }
@@ -367,23 +433,27 @@ class DoublyLinkedList : public LinkedList<Type> {
         std::cout << "[";
         DNode<Type>* temp = tail;
         while (temp != nullptr) {
-            std::cout << temp->data;
+            if constexpr (is_streamable_v<Type>) {
+                std::cout << temp->data;
+            } else {
+                std::cout << "<" << this->strip(typeid(Type).name()) << ">";
+            }
             temp = temp->prev;
             if (temp != nullptr) std::cout << " <--> ";
         }
         std::cout << "] - (reverse)" << std::endl;
     }
 
-    DoublyLinkedList<Type>& operator=(std::initializer_list<Type> il) {
+    DoublyLinkedList<Type>& operator=(std::initializer_list<Type> list) {
         this->clear();
         this->head = nullptr;
-        for (Type value : il) {
+        for (Type value : list) {
             this->insertValue(value, this->size + 1);
         }
         return *this;
     }
 
-    DoublyLinkedList<Type>& operator=(SinglyLinkedList<Type>& list) {
+    DoublyLinkedList<Type>& operator=(DoublyLinkedList<Type>& list) {
         this->clear();
         this->head = nullptr;
         SNode<Type>* temp = list.head;
@@ -414,7 +484,7 @@ class CircularLinkedList : public LinkedList<Type> {
             } else if constexpr (std::is_arithmetic_v<Type>) {
                 charLen += std::to_string(temp->data).length();
             } else {
-                return 0;
+                charLen += this->strip(typeid(Type).name()).length() + 2;
             }
 
             temp = temp->next;
@@ -429,10 +499,19 @@ class CircularLinkedList : public LinkedList<Type> {
         this->size = size;
     }
 
-    CircularLinkedList(std::initializer_list<Type> il) : CircularLinkedList() {
-        for (Type value : il) {
+    CircularLinkedList(std::initializer_list<Type> list) : CircularLinkedList() {
+        for (Type value : list) {
             this->insertValue(value, this->size + 1);
         }
+    }
+
+    CircularLinkedList(CircularLinkedList<Type>& list) : CircularLinkedList() {
+        SNode<Type>* head = list.tail->next;
+        SNode<Type>* temp = head;
+        do {
+            this->insertValue(temp->data, this->size + 1);
+            temp = temp->next;
+        } while (temp != head);
     }
 
     ~CircularLinkedList() {
@@ -538,11 +617,15 @@ class CircularLinkedList : public LinkedList<Type> {
         SNode<Type>* temp = head;
 
         int pos = 1;
-        do {
-            if (temp->data == value) return pos;
-            temp = temp->next;
-            pos++;
-        } while (temp != head);
+        if constexpr (is_comparable_v<Type>) {
+            do {
+                if (temp->data == value) return pos;
+                temp = temp->next;
+                pos++;
+            } while (temp != head);
+        } else {
+            std::cerr << "Error: Type is not comparable using ==" << std::endl;
+        }
 
         return -1;
     }
@@ -558,7 +641,11 @@ class CircularLinkedList : public LinkedList<Type> {
 
         std::cout << "[";
         do {
-            std::cout << temp->data;
+            if constexpr (is_streamable_v<Type>) {
+                std::cout << temp->data;
+            } else {
+                std::cout << "<" << this->strip(typeid(Type).name()) << ">";
+            }
             temp = temp->next;
             if (temp != head) std::cout << " --> ";
         } while (temp != head);
@@ -593,12 +680,23 @@ class CircularLinkedList : public LinkedList<Type> {
         } while (temp2->next != head);
 
         SNode<Type>* temp3 = head;
-        std::cout << "[" << temp2->data << " <-- " << temp1->data;
+        std::cout << "[";
+        if constexpr (is_streamable_v<Type>) {
+            std::cout << temp2->data << " <-- " << temp1->data;
+        } else {
+            std::cout << "<" << this->strip(typeid(Type).name()) << ">";
+            std::cout << " <-- ";
+            std::cout << "<" << this->strip(typeid(Type).name()) << ">";
+        }
         for (int i = 0; i < this->size - 2; i++) {
             while (temp3->next != temp1) {
                 temp3 = temp3->next;
             }
-            std::cout << " <-- " << temp3->data;
+            if constexpr (is_streamable_v<Type>) {
+                std::cout << " <-- " << temp3->data;
+            } else {
+                std::cout << " <-- " << "<" << this->strip(typeid(Type).name()) << ">";
+            }
             temp2 = temp1;
             temp1 = temp3;
             temp3 = head;
@@ -618,6 +716,28 @@ class CircularLinkedList : public LinkedList<Type> {
             }
             std::cout << "+" << std::endl;
         }
+    }
+
+    CircularLinkedList<Type>& operator=(std::initializer_list<Type> list) {
+        this->clear();
+        this->tail = nullptr;
+        for (Type value : list) {
+            this->insertValue(value, this->size + 1);
+        }
+        return *this;
+    }
+
+    CircularLinkedList<Type>& operator=(CircularLinkedList<Type>& list) {
+        this->clear();
+        this->tail = nullptr;
+        SNode<Type>* head = list.tail->next;
+        SNode<Type>* temp = head;
+        do {
+            this->insertValue(temp->data, this->size + 1);
+            temp = temp->next;
+        } while (temp != head);
+
+        return *this;
     }
 };
 
