@@ -680,7 +680,7 @@ class CircularLinkedList : public LinkedList<Type> {
         } while (temp2->next != head);
 
         SNode<Type>* temp3 = head;
-        std::cout << "[";
+        std::cout << "\n[";
         if constexpr (is_streamable_v<Type>) {
             std::cout << temp2->data << " <-- " << temp1->data;
         } else {
