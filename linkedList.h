@@ -17,8 +17,6 @@ struct DNode {
     DNode* prev;
 };
 
-// TODO: Windows Check
-
 // Trait to check if a type is streamable to cout using <<
 template <typename T, typename = void>
 struct is_streamable : std::false_type {};
