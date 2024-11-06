@@ -2,6 +2,8 @@
 
 using namespace std;
 
+// TODO: generalize type and inheritance modification
+
 template <typename Type>
 class arrayList {
    private:
