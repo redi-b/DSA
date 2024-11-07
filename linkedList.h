@@ -492,6 +492,31 @@ class CircularLinkedList : public LinkedList<Type> {
 
         return arrowLen + charLen - 2;
     }
+    void printCircularArrow(int arrowLen, bool reverse = false) {
+        if (reverse) {
+            std::cout << " |";
+            for (int i = 0; i < arrowLen; i++) {
+                std::cout << " ";
+            }
+            std::cout << "+" << std::endl;
+            std::cout << " +";
+            for (int i = 0; i < arrowLen; i++) {
+                std::cout << "-";
+            }
+            std::cout << "+" << std::endl;
+        } else {
+            std::cout << " +";
+            for (int i = 0; i < arrowLen; i++) {
+                std::cout << " ";
+            }
+            std::cout << "|" << std::endl;
+            std::cout << " +";
+            for (int i = 0; i < arrowLen; i++) {
+                std::cout << "-";
+            }
+            std::cout << "+" << std::endl;
+        }
+    }
 
    public:
     CircularLinkedList(int size = 0) {
@@ -652,19 +677,7 @@ class CircularLinkedList : public LinkedList<Type> {
         std::cout << "]" << std::endl;
 
         int arrowLen = this->calculateArrowLen();
-        if (arrowLen > 0) {
-            std::cout << " +";
-            SNode<Type>* temp = head;
-            for (int i = 0; i < arrowLen; i++) {
-                std::cout << " ";
-            }
-            std::cout << "|" << std::endl;
-            std::cout << " +";
-            for (int i = 0; i < arrowLen; i++) {
-                std::cout << "-";
-            }
-            std::cout << "+" << std::endl;
-        }
+        if (arrowLen > 0) this->printCircularArrow(arrowLen);
     }
 
     void printReverse() {
@@ -704,18 +717,7 @@ class CircularLinkedList : public LinkedList<Type> {
         std::cout << "] - (reverse)" << std::endl;
 
         int arrowLen = this->calculateArrowLen();
-        if (arrowLen > 0) {
-            std::cout << " |";
-            for (int i = 0; i < arrowLen; i++) {
-                std::cout << " ";
-            }
-            std::cout << "+" << std::endl;
-            std::cout << " +";
-            for (int i = 0; i < arrowLen; i++) {
-                std::cout << "-";
-            }
-            std::cout << "+" << std::endl;
-        }
+        if (arrowLen > 0) this->printCircularArrow(arrowLen, true);
     }
 
     CircularLinkedList<Type>& operator=(std::initializer_list<Type> list) {
@@ -748,7 +750,191 @@ class CircularDoublyLinkedList : public LinkedList<Type> {
     DNode<Type>* head;
     DNode<Type>* tail;
 
+    int calculateArrowLen() {
+        if (this->size <= 1) return 0;
+
+        int arrowLen = 6 * (this->size - 1);
+        int charLen = 0;
+        DNode<Type>* temp = tail->next;
+        do {
+            if constexpr (std::is_same_v<Type, std::string>) {
+                charLen += temp->data.length();
+            } else if constexpr (std::is_same_v<Type, char*>) {
+                charLen += strlen(temp->data);
+            } else if constexpr (std::is_arithmetic_v<Type>) {
+                charLen += std::to_string(temp->data).length();
+            } else {
+                charLen += this->strip(typeid(Type).name()).length() + 2;
+            }
+
+            temp = temp->next;
+        } while (temp != tail->next);
+
+        return arrowLen + charLen - 2;
+    }
+    void printCircularArrowTop(int arrowLen, bool reverse = false) {
+        if (reverse) {
+            std::cout << "\n +";
+            for (int i = 0; i < arrowLen; i++) {
+                std::cout << "-";
+            }
+            std::cout << "+" << std::endl;
+            std::cout << " +";
+            for (int i = 0; i < arrowLen; i++) {
+                std::cout << " ";
+            }
+            std::cout << "|" << std::endl;
+        } else {
+            std::cout << " +";
+            for (int i = 0; i < arrowLen; i++) {
+                std::cout << "-";
+            }
+            std::cout << "+" << std::endl;
+            std::cout << " |";
+            for (int i = 0; i < arrowLen; i++) {
+                std::cout << " ";
+            }
+            std::cout << "+" << std::endl;
+        }
+    }
+    void printCircularArrowBottom(int arrowLen, bool reverse = false) {
+        if (reverse) {
+            std::cout << " |";
+            for (int i = 0; i < arrowLen; i++) {
+                std::cout << " ";
+            }
+            std::cout << "+" << std::endl;
+            std::cout << " +";
+            for (int i = 0; i < arrowLen; i++) {
+                std::cout << "-";
+            }
+            std::cout << "+" << std::endl;
+        } else {
+            std::cout << " +";
+            for (int i = 0; i < arrowLen; i++) {
+                std::cout << " ";
+            }
+            std::cout << "|" << std::endl;
+            std::cout << " +";
+            for (int i = 0; i < arrowLen; i++) {
+                std::cout << "-";
+            }
+            std::cout << "+" << std::endl;
+        }
+    }
+
    public:
-    CircularDoublyLinkedList() {}
+    CircularDoublyLinkedList() {
+        this->head = nullptr;
+        this->tail = nullptr;
+        this->size = 0;
+    }
     ~CircularDoublyLinkedList() {}
+
+    void insertValue(Type value, int pos = -1) {
+        if (pos > (this->size + 1) || (pos <= 0 && pos != -1)) {
+            std::cout << "Invalid Position!" << std::endl;
+            return;
+        }
+
+        DNode<Type>* newNode = new DNode<Type>();
+        newNode->data = value;
+        newNode->next = nullptr;
+        newNode->prev = nullptr;
+
+        if (head == nullptr && tail == nullptr) {
+            head = newNode;
+            head->next = head;
+            head->prev = head;
+            tail = head;
+            tail->next = head;
+            tail->prev = head;
+            this->size++;
+            return;
+        }
+
+        if (pos == 1) {
+            newNode->next = head;
+            head->prev = newNode;
+            tail->next = newNode;
+            newNode->prev = tail;
+            head = newNode;
+        } else if (pos == -1 || pos == (this->size + 1)) {
+            tail->next = newNode;
+            head->prev = newNode;
+            newNode->next = head;
+            newNode->prev = tail;
+            tail = newNode;
+        } else {
+            DNode<Type>* temp = head;
+
+            for (int i = 1; i < pos - 1; i++) {
+                temp->next = temp;
+            }
+
+            newNode->next = temp->next;
+            newNode->prev = temp;
+            temp->next->prev = newNode;
+            temp->next = newNode;
+        }
+
+        this->size++;
+    }
+
+    void deleteByPosition(int pos) {}
+
+    void deleteByValue(Type value) {}
+
+    int search(Type value) {
+        return -1;
+    }
+
+    void print() {
+        if (head == nullptr && tail == nullptr) {
+            std::cout << "[]" << std::endl;
+            return;
+        }
+
+        DNode<Type>* temp = head;
+
+        int arrowLen = this->calculateArrowLen();
+        if (arrowLen > 0) this->printCircularArrowTop(arrowLen);
+
+        std::cout << "[";
+        do {
+            if constexpr (is_streamable_v<Type>) {
+                std::cout << temp->data;
+            } else {
+                std::cout << "<" << this->strip(typeid(Type).name()) << ">";
+            }
+            temp = temp->next;
+            if (temp != head) std::cout << " <--> ";
+        } while (temp != head);
+        std::cout << "]" << std::endl;
+
+        if (arrowLen > 0) this->printCircularArrowBottom(arrowLen);
+    }
+
+    void printReverse() {
+        if (this->size <= 1) return;
+
+        DNode<Type>* temp = tail;
+
+        int arrowLen = this->calculateArrowLen();
+        if (arrowLen > 0) this->printCircularArrowTop(arrowLen, true);
+
+        std::cout << "[";
+        do {
+            if constexpr (is_streamable_v<Type>) {
+                std::cout << temp->data;
+            } else {
+                std::cout << "<" << this->strip(typeid(Type).name()) << ">";
+            }
+            temp = temp->prev;
+            if (temp != tail) std::cout << " <--> ";
+        } while (temp != tail);
+        std::cout << "] - (reverse)" << std::endl;
+
+        if (arrowLen > 0) this->printCircularArrowBottom(arrowLen, true);
+    }
 };
