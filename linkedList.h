@@ -493,29 +493,22 @@ class CircularLinkedList : public LinkedList<Type> {
         return arrowLen + charLen - 2;
     }
     void printCircularArrow(int arrowLen, bool reverse = false) {
-        if (reverse) {
+        if (reverse)
             std::cout << " |";
-            for (int i = 0; i < arrowLen; i++) {
-                std::cout << " ";
-            }
-            std::cout << "+" << std::endl;
+        else
             std::cout << " +";
-            for (int i = 0; i < arrowLen; i++) {
-                std::cout << "-";
-            }
-            std::cout << "+" << std::endl;
-        } else {
-            std::cout << " +";
-            for (int i = 0; i < arrowLen; i++) {
-                std::cout << " ";
-            }
-            std::cout << "|" << std::endl;
-            std::cout << " +";
-            for (int i = 0; i < arrowLen; i++) {
-                std::cout << "-";
-            }
-            std::cout << "+" << std::endl;
+        for (int i = 0; i < arrowLen; i++) {
+            std::cout << " ";
         }
+        if (reverse)
+            std::cout << "+" << std::endl;
+        else
+            std::cout << "|" << std::endl;
+        std::cout << " +";
+        for (int i = 0; i < arrowLen; i++) {
+            std::cout << "-";
+        }
+        std::cout << "+" << std::endl;
     }
 
    public:
@@ -773,54 +766,42 @@ class CircularDoublyLinkedList : public LinkedList<Type> {
         return arrowLen + charLen - 2;
     }
     void printCircularArrowTop(int arrowLen, bool reverse = false) {
-        if (reverse) {
-            std::cout << "\n +";
-            for (int i = 0; i < arrowLen; i++) {
-                std::cout << "-";
-            }
-            std::cout << "+" << std::endl;
-            std::cout << " +";
-            for (int i = 0; i < arrowLen; i++) {
-                std::cout << " ";
-            }
-            std::cout << "|" << std::endl;
-        } else {
-            std::cout << " +";
-            for (int i = 0; i < arrowLen; i++) {
-                std::cout << "-";
-            }
-            std::cout << "+" << std::endl;
-            std::cout << " |";
-            for (int i = 0; i < arrowLen; i++) {
-                std::cout << " ";
-            }
-            std::cout << "+" << std::endl;
+        if (reverse)
+            std::cout << "\n";
+        std::cout << " +";
+        for (int i = 0; i < arrowLen; i++) {
+            std::cout << "-";
         }
+        std::cout << "+" << std::endl;
+        if (reverse)
+            std::cout << " +";
+        else
+            std::cout << " |";
+        for (int i = 0; i < arrowLen; i++) {
+            std::cout << " ";
+        }
+        if (reverse)
+            std::cout << "|" << std::endl;
+        else
+            std::cout << "+" << std::endl;
     }
     void printCircularArrowBottom(int arrowLen, bool reverse = false) {
-        if (reverse) {
+        if (reverse)
             std::cout << " |";
-            for (int i = 0; i < arrowLen; i++) {
-                std::cout << " ";
-            }
-            std::cout << "+" << std::endl;
+        else
             std::cout << " +";
-            for (int i = 0; i < arrowLen; i++) {
-                std::cout << "-";
-            }
-            std::cout << "+" << std::endl;
-        } else {
-            std::cout << " +";
-            for (int i = 0; i < arrowLen; i++) {
-                std::cout << " ";
-            }
-            std::cout << "|" << std::endl;
-            std::cout << " +";
-            for (int i = 0; i < arrowLen; i++) {
-                std::cout << "-";
-            }
-            std::cout << "+" << std::endl;
+        for (int i = 0; i < arrowLen; i++) {
+            std::cout << " ";
         }
+        if (reverse)
+            std::cout << "+" << std::endl;
+        else
+            std::cout << "|" << std::endl;
+        std::cout << " +";
+        for (int i = 0; i < arrowLen; i++) {
+            std::cout << "-";
+        }
+        std::cout << "+" << std::endl;
     }
 
    public:
