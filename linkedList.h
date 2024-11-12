@@ -599,9 +599,9 @@ class CircularLinkedList : public LinkedList<Type> {
         SNode<Type>* head = tail->next;
 
         if (pos == 1) {
-            SNode<Type>* temp = head;
-            tail->next = temp->next;
-            delete temp;
+            SNode<Type>* toDelete = head;
+            tail->next = toDelete->next;
+            delete toDelete;
         } else {
             SNode<Type>* temp = head;
             for (int i = 1; i < pos - 1; i++) {
@@ -736,7 +736,6 @@ class CircularLinkedList : public LinkedList<Type> {
     }
 };
 
-// TODO: Implementation
 template <typename Type>
 class CircularDoublyLinkedList : public LinkedList<Type> {
    private:
@@ -840,7 +839,7 @@ class CircularDoublyLinkedList : public LinkedList<Type> {
             tail->next = newNode;
             newNode->prev = tail;
             head = newNode;
-        } else if (pos == -1 || pos == (this->size + 1)) {
+        } else if (pos == -1 || pos == this->size + 1) {
             tail->next = newNode;
             head->prev = newNode;
             newNode->next = head;
@@ -850,23 +849,81 @@ class CircularDoublyLinkedList : public LinkedList<Type> {
             DNode<Type>* temp = head;
 
             for (int i = 1; i < pos - 1; i++) {
-                temp->next = temp;
+                temp = temp->next;
             }
 
             newNode->next = temp->next;
-            newNode->prev = temp;
             temp->next->prev = newNode;
             temp->next = newNode;
+            newNode->prev = temp;
         }
 
         this->size++;
     }
 
-    void deleteByPosition(int pos) {}
+    void deleteByPosition(int pos) {
+        if (this->size == 0) {
+            std::cout << "List is empty!" << std::endl;
+            return;
+        }
 
-    void deleteByValue(Type value) {}
+        if (pos > this->size || pos < 1) {
+            std::cout << "Invalid Position!" << std::endl;
+            return;
+        }
+
+        if (pos == 1) {
+            DNode<Type>* toDelete = head;
+            head = toDelete->next;
+            tail->next = head;
+            head->prev = tail;
+            delete toDelete;
+        } else if (pos == this->size) {
+            DNode<Type>* toDelete = tail;
+            tail = toDelete->prev;
+            head->prev = tail;
+            tail->next = head;
+            delete toDelete;
+        } else {
+            DNode<Type>* temp = head;
+            for (int i = 1; i < pos - 1; i++) {
+                temp = temp->next;
+            }
+            DNode<Type>* toDelete = temp->next;
+            temp->next = toDelete->next;
+            toDelete->next->prev = temp;
+            delete toDelete;
+        }
+        this->size--;
+    }
+
+    void deleteByValue(Type value) {
+        int pos = this->search(value);
+
+        if (pos != -1) {
+            this->deleteByPosition(pos);
+            return;
+        }
+
+        std::cout << "Element not found!" << std::endl;
+    }
 
     int search(Type value) {
+        if (this->size == 0) return -1;
+
+        DNode<Type>* temp = head;
+
+        int pos = 1;
+        if constexpr (is_comparable_v<Type>) {
+            do {
+                if (temp->data == value) return pos;
+                temp = temp->next;
+                pos++;
+            } while (temp != head);
+        } else {
+            std::cerr << "Error: Type is not comparable using ==" << std::endl;
+        }
+
         return -1;
     }
 
