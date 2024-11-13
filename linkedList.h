@@ -159,7 +159,9 @@ class SinglyLinkedList : public LinkedList<Type> {
             return;
         }
 
-        if (pos == 1) {
+        if (pos == 1) {           head = head->next;
+            head->prev = nullptr;
+ 
             SNode<Type>* temp = head;
             head = head->next;
             delete temp;
@@ -363,8 +365,14 @@ class DoublyLinkedList : public LinkedList<Type> {
 
         if (pos == 1) {
             DNode<Type>* toDelete = head;
-            head = head->next;
-            head->prev = nullptr;
+            if (this->size > 1) {
+                head = head->next;
+                head->prev = tail;
+                tail->next = head;
+            } else {
+                head = nullptr;
+                tail = nullptr;
+            }
             delete toDelete;
         } else if (pos == this->size) {
             DNode<Type>* toDelete = tail;
@@ -600,7 +608,11 @@ class CircularLinkedList : public LinkedList<Type> {
 
         if (pos == 1) {
             SNode<Type>* toDelete = head;
-            tail->next = toDelete->next;
+            if (this->size > 1) {
+                tail->next = toDelete->next;
+            } else {
+                tail = nullptr;
+            }
             delete toDelete;
         } else {
             SNode<Type>* temp = head;
@@ -874,9 +886,14 @@ class CircularDoublyLinkedList : public LinkedList<Type> {
 
         if (pos == 1) {
             DNode<Type>* toDelete = head;
-            head = toDelete->next;
-            tail->next = head;
-            head->prev = tail;
+            if (this->size > 1) {
+                head = toDelete->next;
+                tail->next = head;
+                head->prev = tail;
+            } else {
+                head = nullptr;
+                tail = nullptr;
+            }
             delete toDelete;
         } else if (pos == this->size) {
             DNode<Type>* toDelete = tail;
@@ -928,7 +945,7 @@ class CircularDoublyLinkedList : public LinkedList<Type> {
     }
 
     void print() {
-        if (head == nullptr && tail == nullptr) {
+        if (head == NULL && tail == NULL) {
             std::cout << "[]" << std::endl;
             return;
         }
