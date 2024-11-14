@@ -159,9 +159,10 @@ class SinglyLinkedList : public LinkedList<Type> {
             return;
         }
 
-        if (pos == 1) {           head = head->next;
+        if (pos == 1) {
+            head = head->next;
             head->prev = nullptr;
- 
+
             SNode<Type>* temp = head;
             head = head->next;
             delete temp;
