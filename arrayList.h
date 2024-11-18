@@ -124,6 +124,16 @@ class arrayList {
         cout << endl;
     };
 
+    void printReverse() {
+        cout << "[";
+        for (int i = size - 1; i >= 0; i--) {
+            cout << array[i];
+            if (i != 0) cout << ", ";
+        }
+        cout << "]";
+        cout << endl;
+    };
+
     int getSize() {
         return size;
     };

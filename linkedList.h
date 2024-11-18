@@ -161,7 +161,6 @@ class SinglyLinkedList : public LinkedList<Type> {
 
         if (pos == 1) {
             head = head->next;
-            head->prev = nullptr;
 
             SNode<Type>* temp = head;
             head = head->next;
@@ -368,8 +367,7 @@ class DoublyLinkedList : public LinkedList<Type> {
             DNode<Type>* toDelete = head;
             if (this->size > 1) {
                 head = head->next;
-                head->prev = tail;
-                tail->next = head;
+                head->prev = nullptr;
             } else {
                 head = nullptr;
                 tail = nullptr;
@@ -422,6 +420,10 @@ class DoublyLinkedList : public LinkedList<Type> {
         return -1;
     }
 
+    DNode<Type>* getTail() {
+        return tail;
+    }
+
     void print() {
         std::cout << "[";
         DNode<Type>* temp = head;
@@ -450,7 +452,7 @@ class DoublyLinkedList : public LinkedList<Type> {
             temp = temp->prev;
             if (temp != nullptr) std::cout << " <--> ";
         }
-        std::cout << "] - (reverse)" << std::endl;
+        // std::cout << "] - (reverse)" << std::endl;
     }
 
     DoublyLinkedList<Type>& operator=(std::initializer_list<Type> list) {
