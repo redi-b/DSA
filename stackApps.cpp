@@ -36,6 +36,9 @@ int main() {
     getline(cin, infix);
     string postfix = infixToPostfix(infix);
     cout << "Postfix: " << postfix << endl;
+
+    cout << "Result: " << evalPostfix(postfix) << endl;
+
     return 0;
 }
 
@@ -72,7 +75,7 @@ string decimalToBinary(int num) {
 
 string infixToPostfix(string infix) {
     string operators = "()^*/+-";
-    StackLLB<char> stack;
+    StackALB<char> stack;
     string postfix = "";
 
     for (int i = 0; i < infix.length(); i++) {
@@ -113,7 +116,35 @@ string infixToPostfix(string infix) {
 }
 
 int evalPostfix(string postfix) {
-    return 0;
+    StackALB<int> stack;
+    
+    for (int i = 0; i < postfix.length(); i++) {
+        if (postfix[i] >= '0' && postfix[i] <= '9') {
+            stack.push(postfix[i] - '0');
+        } else {
+            int operand2 = stack.pop();
+            int operand1 = stack.pop();
+            switch (postfix[i]) {
+                case '+':
+                    stack.push(operand1 + operand2);
+                    break;
+                case '-':
+                    stack.push(operand1 - operand2);
+                    break;
+                case '*':
+                    stack.push(operand1 * operand2);
+                    break;
+                case '/':
+                    stack.push(operand1 / operand2);
+                    break;
+                case '^':
+                    stack.push(operand1 ^ operand2);
+                    break;
+            }
+        }
+    }
+
+    return stack.pop();
 }
 
 int evalPrecedence(char op) {
