@@ -1,4 +1,5 @@
 #include <iostream>
+
 #include "stack.h"
 
 using namespace std;
@@ -30,7 +31,7 @@ void handleStack(Stack<Type>* stack);
 int main() {
     while (true) {
         StackType stackType = getStackType();
-        
+
         switch (stackType) {
             case StackType::ArrayBased: {
                 StackAB<int>* stack = new StackAB<int>();
@@ -60,7 +61,7 @@ int main() {
                 cout << "Invalid choice!" << endl;
         }
     }
-    
+
     return 0;
 }
 
@@ -78,11 +79,16 @@ StackType getStackType() {
     cin >> choice;
 
     switch (choice) {
-        case 1: return StackType::ArrayBased;
-        case 2: return StackType::ArrayListBased;
-        case 3: return StackType::LinkedListBased;
-        case 4: return StackType::Exit;
-        default: return StackType::InvalidChoice;
+        case 1:
+            return StackType::ArrayBased;
+        case 2:
+            return StackType::ArrayListBased;
+        case 3:
+            return StackType::LinkedListBased;
+        case 4:
+            return StackType::Exit;
+        default:
+            return StackType::InvalidChoice;
     }
 }
 
@@ -103,14 +109,22 @@ MenuChoice getMenuChoice() {
     cin >> choice;
 
     switch (choice) {
-        case 1: return MenuChoice::Push;
-        case 2: return MenuChoice::Pop;
-        case 3: return MenuChoice::Peek;
-        case 4: return MenuChoice::Display;
-        case 5: return MenuChoice::IsEmpty;
-        case 6: return MenuChoice::BackToType;
-        case 7: return MenuChoice::Exit;
-        default: return MenuChoice::InvalidChoice;
+        case 1:
+            return MenuChoice::Push;
+        case 2:
+            return MenuChoice::Pop;
+        case 3:
+            return MenuChoice::Peek;
+        case 4:
+            return MenuChoice::Display;
+        case 5:
+            return MenuChoice::IsEmpty;
+        case 6:
+            return MenuChoice::BackToType;
+        case 7:
+            return MenuChoice::Exit;
+        default:
+            return MenuChoice::InvalidChoice;
     }
 }
 
@@ -119,7 +133,7 @@ void handleStack(Stack<Type>* stack) {
     MenuChoice choice;
     do {
         choice = getMenuChoice();
-        
+
         switch (choice) {
             case MenuChoice::Push: {
                 Type value;

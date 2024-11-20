@@ -13,7 +13,7 @@ enum class StackChoice {
     InvalidChoice
 };
 
-enum class EvalChoice {
+enum class ExpChoice {
     Infix,
     Postfix,
     Back,
@@ -31,15 +31,16 @@ int evalPostfix(string postfix);
 // Helper functions
 int evalPrecedence(char op);
 StackChoice getStackChoice();
-EvalChoice getEvalChoice();
+ExpChoice getEvalChoice();
+void handleExpEval(ExpChoice expChoice);
 
 int main() {
     StackChoice choice;
     string input;
-    
+
     do {
         choice = getStackChoice();
-        cin.ignore(); // Clear input buffer
+        cin.ignore();  // Clear input buffer
 
         switch (choice) {
             case StackChoice::Palindrome: {
@@ -49,7 +50,7 @@ int main() {
                 cout << "Result: " << (isInputPalindrome ? "👍 It's a palindrome!" : "👎 Not a palindrome!") << endl;
                 break;
             }
-            
+
             case StackChoice::DecimalToBinary: {
                 int num;
                 cout << "Enter a decimal number to convert to binary: ";
@@ -58,7 +59,7 @@ int main() {
                 cout << num << " in binary: " << binary << endl;
                 break;
             }
-            
+
             case StackChoice::InfixToPostfix: {
                 cout << "Enter an infix expression: ";
                 getline(cin, input);
@@ -66,50 +67,26 @@ int main() {
                 cout << "Postfix expression: " << postfix << endl;
                 break;
             }
-            
+
             case StackChoice::ExpressionEvaluation: {
-                EvalChoice expChoice;
+                ExpChoice expChoice;
                 do {
                     expChoice = getEvalChoice();
                     cin.ignore();
-
-                    switch (expChoice) {
-                        case EvalChoice::Infix: {
-                            cout << "Enter an infix expression: ";
-                            getline(cin, input);
-                            string postfix = infixToPostfix(input);
-                            cout << "Converted to postfix: " << postfix << endl;
-                            cout << "Evaluation result: " << evalPostfix(postfix) << endl;
-                            break;
-                        }
-                        
-                        case EvalChoice::Postfix: {
-                            cout << "Enter a postfix expression: ";
-                            getline(cin, input);
-                            cout << "Evaluation result: " << evalPostfix(input) << endl;
-                            break;
-                        }
-                        
-                        case EvalChoice::InvalidChoice:
-                            cout << "Invalid choice! Please try again." << endl;
-                            break;
-                            
-                        case EvalChoice::Back:
-                            break;
-                    }
-                } while (expChoice != EvalChoice::Back);
+                    handleExpEval(expChoice);
+                } while (expChoice != ExpChoice::Back);
                 break;
             }
-            
+
             case StackChoice::InvalidChoice:
                 cout << "Invalid choice! Please try again." << endl;
                 break;
-                
+
             case StackChoice::Exit:
                 cout << "Exiting..." << endl;
                 break;
         }
-        
+
     } while (choice != StackChoice::Exit);
 
     return 0;
@@ -190,7 +167,7 @@ string infixToPostfix(string infix) {
 
 int evalPostfix(string postfix) {
     StackALB<int> stack;
-    
+
     for (int i = 0; i < postfix.length(); i++) {
         if (postfix[i] >= '0' && postfix[i] <= '9') {
             stack.push(postfix[i] - '0');
@@ -247,16 +224,22 @@ StackChoice getStackChoice() {
     cin >> choice;
 
     switch (choice) {
-        case 1: return StackChoice::Palindrome;
-        case 2: return StackChoice::DecimalToBinary;
-        case 3: return StackChoice::InfixToPostfix;
-        case 4: return StackChoice::ExpressionEvaluation;
-        case 5: return StackChoice::Exit;
-        default: return StackChoice::InvalidChoice;
+        case 1:
+            return StackChoice::Palindrome;
+        case 2:
+            return StackChoice::DecimalToBinary;
+        case 3:
+            return StackChoice::InfixToPostfix;
+        case 4:
+            return StackChoice::ExpressionEvaluation;
+        case 5:
+            return StackChoice::Exit;
+        default:
+            return StackChoice::InvalidChoice;
     }
 }
 
-EvalChoice getEvalChoice() {
+ExpChoice getEvalChoice() {
     int choice;
     cout << "\n=======================================" << endl;
     cout << "      Expression Input Type           " << endl;
@@ -269,9 +252,42 @@ EvalChoice getEvalChoice() {
     cin >> choice;
 
     switch (choice) {
-        case 1: return EvalChoice::Infix;
-        case 2: return EvalChoice::Postfix;
-        case 3: return EvalChoice::Back;
-        default: return EvalChoice::InvalidChoice;
+        case 1:
+            return ExpChoice::Infix;
+        case 2:
+            return ExpChoice::Postfix;
+        case 3:
+            return ExpChoice::Back;
+        default:
+            return ExpChoice::InvalidChoice;
+    }
+}
+
+void handleExpEval(ExpChoice expChoice) {
+    string input;
+
+    switch (expChoice) {
+        case ExpChoice::Infix: {
+            cout << "Enter an infix expression: ";
+            getline(cin, input);
+            string postfix = infixToPostfix(input);
+            cout << "Converted to postfix: " << postfix << endl;
+            cout << "Evaluation result: " << evalPostfix(postfix) << endl;
+            break;
+        }
+
+        case ExpChoice::Postfix: {
+            cout << "Enter a postfix expression: ";
+            getline(cin, input);
+            cout << "Evaluation result: " << evalPostfix(input) << endl;
+            break;
+        }
+
+        case ExpChoice::InvalidChoice:
+            cout << "Invalid choice! Please try again." << endl;
+            break;
+
+        case ExpChoice::Back:
+            break;
     }
 }
