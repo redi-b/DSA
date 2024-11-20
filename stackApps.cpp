@@ -109,6 +109,8 @@ bool palindrome(string str) {
 }
 
 string decimalToBinary(int num) {
+    if (num == 0) return "0";
+
     StackLLB<int> stack;
 
     while (num > 0) {
@@ -124,15 +126,13 @@ string decimalToBinary(int num) {
 }
 
 string infixToPostfix(string infix) {
-    string operators = "()^*/+-";
     StackALB<char> stack;
     string postfix = "";
 
     for (int i = 0; i < infix.length(); i++) {
-        if (infix[i] == ' ')
-            continue;
+        if (infix[i] == ' ') continue;
 
-        if (operators.find(infix[i]) == string::npos) {
+        if (isdigit(infix[i])) {
             postfix += infix[i];
             continue;
         }
@@ -142,8 +142,7 @@ string infixToPostfix(string infix) {
         } else {
             if (infix[i] == ')') {
                 while (!stack.isEmpty()) {
-                    if (stack.peek() == '(')
-                        break;
+                    if (stack.peek() == '(') break;
                     postfix += stack.pop();
                 }
                 stack.pop();
