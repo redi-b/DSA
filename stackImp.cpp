@@ -24,9 +24,8 @@ enum class MenuChoice {
 
 StackType getStackType();
 MenuChoice getMenuChoice();
-void handleStack(StackAB<int>* stack);
-void handleStack(StackALB<int>* stack);
-void handleStack(StackLLB<int>* stack);
+template <template <typename> class Stack, typename Type>
+void handleStack(Stack<Type>* stack);
 
 int main() {
     while (true) {
@@ -115,15 +114,15 @@ MenuChoice getMenuChoice() {
     }
 }
 
-template <typename Stack>
-void handleStack(Stack* stack) {
+template <template <typename> class Stack, typename Type>
+void handleStack(Stack<Type>* stack) {
     MenuChoice choice;
     do {
         choice = getMenuChoice();
         
         switch (choice) {
             case MenuChoice::Push: {
-                int value;
+                Type value;
                 cout << "Enter value to push: ";
                 cin >> value;
                 stack->push(value);
@@ -131,7 +130,7 @@ void handleStack(Stack* stack) {
                 break;
             }
             case MenuChoice::Pop: {
-                int value = stack->pop();
+                Type value = stack->pop();
                 if (!stack->isEmpty()) {
                     cout << "Popped value: " << value << endl;
                 }
