@@ -160,8 +160,6 @@ class SinglyLinkedList : public LinkedList<Type> {
         }
 
         if (pos == 1) {
-            head = head->next;
-
             SNode<Type>* temp = head;
             head = head->next;
             delete temp;
@@ -250,6 +248,10 @@ class SinglyLinkedList : public LinkedList<Type> {
             temp3 = head;
         }
         std::cout << "] - (reverse)" << std::endl;
+    }
+
+    SNode<Type>* getHead() {
+        return head;
     }
 
     SinglyLinkedList<Type>& operator=(std::initializer_list<Type> list) {
@@ -422,6 +424,10 @@ class DoublyLinkedList : public LinkedList<Type> {
 
     DNode<Type>* getTail() {
         return tail;
+    }
+
+    DNode<Type>* getHead() {
+        return head;
     }
 
     void print() {
