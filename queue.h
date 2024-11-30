@@ -46,7 +46,7 @@ class QueueAB {
         return size == 0;
     }
     bool isFull() {
-        return rear == capacity - 1;
+        return rear == capacity;
     }
     int getSize() {
         return size;
@@ -55,7 +55,7 @@ class QueueAB {
         std::cout << "[";
         for (int i = front; i < rear; i++) {
             std::cout << queue[i];
-            if (i != rear - 1) std::cout << " <- ";
+            if (i != rear - 1) std::cout << " <-- ";
         }
         std::cout << "]" << std::endl;
     }
@@ -67,8 +67,7 @@ class QueueLLB {
     SinglyLinkedList<Type> list;
 
    public:
-    QueueLLB() {
-    }
+    QueueLLB() {}
 
     void enqueue(Type value) {
         list.insertValue(value);
@@ -109,7 +108,7 @@ class QueueLLB {
         while (head != nullptr) {
             std::cout << head->data;
             head = head->next;
-            if (head != nullptr) std::cout << " <- ";
+            if (head != nullptr) std::cout << " <-- ";
         }
         std::cout << "]" << std::endl;
     }
@@ -121,25 +120,25 @@ class CircularQueue : public QueueAB<Type> {
     CircularQueue(int size) : QueueAB<Type>(size) {}
 
     void enqueue(Type value) {
-        if (this->size >= this->capacity) {
+        if (isFull()) {
             std::cout << "Queue is full!" << std::endl;
             return;
         }
 
-        this->rear++;
-        if (this->rear >= this->capacity) this->rear = 0;
-        this->queue[this->rear] = value;
+        if (this->rear == this->capacity) this->rear = 0;
+        this->queue[this->rear++] = value;
         this->size++;
     }
 
     Type dequeue() {
-        if (this->size < 1) {
+        if (this->isEmpty()) {
+            std::cout << "Queue is empty!" << std::endl;
             return Type();
         }
 
-        this->front++;
-        if (this->front >= this->capacity) this->front = 0;
         Type value = this->queue[this->front];
+        this->queue[this->front++] = 0;
+        if (this->front == this->capacity) this->front = 0;
         this->size--;
         return value;
     }
@@ -149,12 +148,60 @@ class CircularQueue : public QueueAB<Type> {
     }
 
     void display() {
-        
+        std::cout << "[";
+        int idx = this->front;
+        for (int i = 0; i < this->size; i++) {
+            std::cout << this->queue[idx++];
+            if (idx != this->rear) std::cout << " <-- ";
+            if (idx == this->capacity) idx = 0;
+        }
+        std::cout << "]" << std::endl;
     }
 };
 
 template <class Type>
 class Deque {
+   private:
+    DoublyLinkedList<Type> list;
+
+   public:
+    Deque() {}
+
+    void enqueueFront(Type value) {
+        list.insertValue(value, 1);
+    }
+    void enqueueRear(Type value) {
+        list.insertValue(value);
+    }
+    Type dequeueFront() {
+        Type value = list.getHead()->data;
+        list.deleteByPosition(1);
+        return value;
+    }
+    Type dequeueRear() {
+        Type value = list.getTail()->data;
+        list.deleteByPosition(list.getSize());
+        return value;
+    }
+    Type peek() {
+        return list.getHead()->data;
+    }
+    bool isEmpty() {
+        return list.getSize() == 0;
+    }
+    int getSize() {
+        return list.getSize();
+    }
+    void display() {
+        DNode<Type>* head = list.getHead();
+        std::cout << "[";
+        while (head != nullptr) {
+            std::cout << head->data;
+            head = head->next;
+            if (head != nullptr) std::cout << " <-- ";
+        }
+        std::cout << "]" << std::endl;
+    }
 };
 
 template <class Type>
