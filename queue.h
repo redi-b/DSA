@@ -17,26 +17,28 @@ class QueueAB {
 
     void enqueue(Type value) {
         if (isFull()) {
-            std::cout << "Queue is full!" << std::endl;
+            std::cout << "Enqueue '" << value << "' failed: Queue is full" << std::endl;
             return;
         }
 
         queue[rear++] = value;
         size++;
     }
+
     Type dequeue() {
         if (isEmpty()) {
-            std::cout << "Queue is empty!" << std::endl;
+            std::cout << "Dequeue failed: Queue is empty" << std::endl;
             return Type();
         }
 
         Type value = queue[front++];
         size--;
+
         return value;
     }
     Type peek() {
         if (isEmpty()) {
-            std::cout << "Queue is empty!" << std::endl;
+            std::cout << "Peek failed: Queue is empty" << std::endl;
             return Type();
         }
 
@@ -59,6 +61,26 @@ class QueueAB {
         }
         std::cout << "]" << std::endl;
     }
+
+    // Overloads with logging
+    void enqueue(Type value, bool log) {
+        enqueue(value);
+
+        if (log && !isFull()) {
+            std::cout << "Enqueue: " << value << std::endl;
+            display();
+        }
+    }
+    Type dequeue(bool log) {
+        const Type& value = dequeue();
+
+        if (log && !isEmpty()) {
+            std::cout << "Dequeue: " << value << std::endl;
+            display();
+        }
+
+        return value;
+    }
 };
 
 template <class Type>
@@ -75,18 +97,19 @@ class QueueLLB {
 
     Type dequeue() {
         if (isEmpty()) {
-            std::cout << "Queue is empty!" << std::endl;
+            std::cout << "Dequeue failed: Queue is empty" << std::endl;
             return Type();
         }
 
         Type value = queue.getHead()->data;
         queue.deleteByPosition(1);
+
         return value;
     }
 
     Type peek() {
         if (queue.getSize() < 1) {
-            std::cout << "Queue is empty!" << std::endl;
+            std::cout << "Peek failed: Queue is empty" << std::endl;
             return Type();
         }
 
@@ -112,6 +135,27 @@ class QueueLLB {
         }
         std::cout << "]" << std::endl;
     }
+
+    // Overloads with logging
+    void enqueue(Type value, bool log) {
+        enqueue(value);
+
+        if (log) {
+            std::cout << "Enqueue: " << value << std::endl;
+            display();
+        }
+    }
+
+    Type dequeue(bool log) {
+        const Type& value = dequeue();
+
+        if (log && !this->isEmpty()) {
+            std::cout << "Dequeue: " << value << std::endl;
+            display();
+        }
+
+        return value;
+    }
 };
 
 template <class Type>
@@ -121,7 +165,7 @@ class CircularQueue : public QueueAB<Type> {
 
     void enqueue(Type value) {
         if (isFull()) {
-            std::cout << "Queue is full!" << std::endl;
+            std::cout << "Enqueue '" << value << "' failed: Queue is full" << std::endl;
             return;
         }
 
@@ -132,7 +176,7 @@ class CircularQueue : public QueueAB<Type> {
 
     Type dequeue() {
         if (this->isEmpty()) {
-            std::cout << "Queue is empty!" << std::endl;
+            std::cout << "Dequeue failed: Queue is empty" << std::endl;
             return Type();
         }
 
@@ -140,6 +184,7 @@ class CircularQueue : public QueueAB<Type> {
         this->queue[this->front++] = 0;
         if (this->front == this->capacity) this->front = 0;
         this->size--;
+
         return value;
     }
 
@@ -156,6 +201,27 @@ class CircularQueue : public QueueAB<Type> {
             if (idx == this->capacity) idx = 0;
         }
         std::cout << "]" << std::endl;
+    }
+
+    // Overloads with logging
+    void enqueue(Type value, bool log) {
+        enqueue(value);
+
+        if (log && !isFull()) {
+            std::cout << "Enqueue: " << value << std::endl;
+            display();
+        }
+    }
+
+    Type dequeue(bool log) {
+        const Type& value = dequeue();
+
+        if (log && !this->isEmpty()) {
+            std::cout << "Dequeue: " << value << std::endl;
+            display();
+        }
+
+        return value;
     }
 };
 
@@ -175,25 +241,32 @@ class Deque {
     }
     Type dequeueFront() {
         if (isEmpty()) {
-            std::cout << "Queue is empty!" << std::endl;
+            std::cout << "Dequeue failed: Queue is empty" << std::endl;
             return Type();
         }
 
         Type value = queue.getHead()->data;
         queue.deleteByPosition(1);
+
         return value;
     }
     Type dequeueRear() {
         if (isEmpty()) {
-            std::cout << "Queue is empty!" << std::endl;
+            std::cout << "Dequeue failed: Queue is empty" << std::endl;
             return Type();
         }
 
         Type value = queue.getTail()->data;
         queue.deleteByPosition(queue.getSize());
+
         return value;
     }
     Type peek() {
+        if (isEmpty()) {
+            std::cout << "Peek failed: Queue is empty" << std::endl;
+            return Type();
+        }
+
         return queue.getHead()->data;
     }
     bool isEmpty() {
@@ -212,8 +285,63 @@ class Deque {
         }
         std::cout << "]" << std::endl;
     }
+
+    // Overloads with logging
+    void enqueueFront(Type value, bool log) {
+        enqueueFront(value);
+
+        if (log) {
+            std::cout << "Enqueue front: " << value << std::endl;
+            display();
+        }
+    }
+    void enqueueRear(Type value, bool log) {
+        enqueueRear(value);
+
+        if (log) {
+            std::cout << "Enqueue rear: " << value << std::endl;
+            display();
+        }
+    }
+    Type dequeueFront(bool log) {
+        const Type& value = dequeueFront(value);
+
+        if (log) {
+            std::cout << "Dequeue front: " << value << std::endl;
+            display();
+        }
+
+        return value;
+    }
+    Type dequeueRear(bool log) {
+        const Type& value = dequeueRear(value);
+
+        if (log) {
+            std::cout << "Dequeue rear: " << value << std::endl;
+            display();
+        }
+
+        return value;
+    }
 };
 
 template <class Type>
 class PriorityQueue {
+   private:
+    DoublyLinkedList<Type> queue;
+
+   public:
+    PriorityQueue() {}
+
+    void enqueue(Type value, bool log = false) {}
+    Type dequeue(bool log = false) {
+        return Type();
+    }
+    Type peek() {
+        return Type();
+    }
+    bool isEmpty() {
+        return false;
+    }
+    void displaye() {}
 };
