@@ -63,47 +63,47 @@ class QueueAB {
 
 template <class Type>
 class QueueLLB {
-   private:
-    SinglyLinkedList<Type> list;
+   protected:
+    SinglyLinkedList<Type> queue;
 
    public:
     QueueLLB() {}
 
     void enqueue(Type value) {
-        list.insertValue(value);
+        queue.insertValue(value);
     }
 
     Type dequeue() {
-        if (list.getSize() < 1) {
+        if (isEmpty()) {
             std::cout << "Queue is empty!" << std::endl;
             return Type();
         }
 
-        Type value = list.getHead()->data;
-        list.deleteByPosition(1);
+        Type value = queue.getHead()->data;
+        queue.deleteByPosition(1);
         return value;
     }
 
     Type peek() {
-        if (list.getSize() < 1) {
+        if (queue.getSize() < 1) {
             std::cout << "Queue is empty!" << std::endl;
             return Type();
         }
 
-        Type value = list.getHead()->data;
+        Type value = queue.getHead()->data;
         return value;
     }
 
     bool isEmpty() {
-        return list.getSize() == 0;
+        return queue.getSize() == 0;
     }
 
     int getSize() {
-        return list.getSize();
+        return queue.getSize();
     }
 
     void display() {
-        SNode<Type>* head = list.getHead();
+        SNode<Type>* head = queue.getHead();
         std::cout << "[";
         while (head != nullptr) {
             std::cout << head->data;
@@ -162,38 +162,48 @@ class CircularQueue : public QueueAB<Type> {
 template <class Type>
 class Deque {
    private:
-    DoublyLinkedList<Type> list;
+    DoublyLinkedList<Type> queue;
 
    public:
     Deque() {}
 
     void enqueueFront(Type value) {
-        list.insertValue(value, 1);
+        queue.insertValue(value, 1);
     }
     void enqueueRear(Type value) {
-        list.insertValue(value);
+        queue.insertValue(value);
     }
     Type dequeueFront() {
-        Type value = list.getHead()->data;
-        list.deleteByPosition(1);
+        if (isEmpty()) {
+            std::cout << "Queue is empty!" << std::endl;
+            return Type();
+        }
+
+        Type value = queue.getHead()->data;
+        queue.deleteByPosition(1);
         return value;
     }
     Type dequeueRear() {
-        Type value = list.getTail()->data;
-        list.deleteByPosition(list.getSize());
+        if (isEmpty()) {
+            std::cout << "Queue is empty!" << std::endl;
+            return Type();
+        }
+
+        Type value = queue.getTail()->data;
+        queue.deleteByPosition(queue.getSize());
         return value;
     }
     Type peek() {
-        return list.getHead()->data;
+        return queue.getHead()->data;
     }
     bool isEmpty() {
-        return list.getSize() == 0;
+        return queue.getSize() == 0;
     }
     int getSize() {
-        return list.getSize();
+        return queue.getSize();
     }
     void display() {
-        DNode<Type>* head = list.getHead();
+        DNode<Type>* head = queue.getHead();
         std::cout << "[";
         while (head != nullptr) {
             std::cout << head->data;
