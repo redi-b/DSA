@@ -14,6 +14,9 @@ class QueueAB {
         queue = new Type[capacity];
         front = rear = this->size = 0;
     }
+    ~QueueAB() {
+        delete[] queue;
+    }
 
     void enqueue(Type value) {
         if (isFull()) {
@@ -325,23 +328,127 @@ class Deque {
     }
 };
 
-template <class Type>
+template <class DataType>
+struct PriorityNode {
+    DataType data;
+    int priority;
+    PriorityNode* next;
+
+    PriorityNode(DataType value) : data(value), priority(0), next(nullptr) {}
+    PriorityNode(DataType value, int prio) : data(value), priority(prio), next(nullptr) {}
+};
+
+template <class DataType>
 class PriorityQueue {
    private:
-    DoublyLinkedList<Type> queue;
+    using Node = PriorityNode<DataType>;
+    Node* front;
+    Node* rear;
 
    public:
-    PriorityQueue() {}
+    PriorityQueue() : front(nullptr), rear(nullptr) {}
 
-    void enqueue(Type value) {}
-    Type dequeue() {
-        return Type();
+    ~PriorityQueue() {
+        while (front) {
+            Node* temp = front;
+            front = front->next;
+            delete temp;
+        }
     }
-    Type peek() {
-        return Type();
+
+    void enqueue(DataType value) {
+        Node* newNode = new Node(value);
+        if (!rear) {
+            front = rear = newNode;
+            return;
+        }
+        rear->next = newNode;
+        rear = newNode;
+        std::cout << "Enqueue: " << newNode->data << " (Priority: " << newNode->priority << ")" << std::endl;
     }
+
+    void enqueue(DataType value, int priority) {
+        Node* newNode = new Node(value, priority);
+        if (!rear) {
+            front = rear = newNode;
+            return;
+        }
+        rear->next = newNode;
+        rear = newNode;
+        std::cout << "Enqueue: " << newNode->data << " (Priority: " << newNode->priority << ")" << std::endl;
+    }
+
+    DataType dequeue() {
+        if (isEmpty()) {
+            std::cout << "Dequeue failed: Queue is empty" << std::endl;
+            return DataType();
+        }
+
+        Node* prev = nullptr;
+        Node* current = front;
+        Node* highestPriorityNode = front;
+        Node* prevHighest = nullptr;
+
+        // Find the highest priority element
+        while (current) {
+            if (current->priority > highestPriorityNode->priority) {
+                highestPriorityNode = current;
+                prevHighest = prev;
+            }
+            prev = current;
+            current = current->next;
+        }
+
+        // If the highest priority element is at the front, just dequeue it
+        if (highestPriorityNode == front) {
+            front = front->next;
+            if (!front) rear = nullptr;
+        } else {
+            // Remove the highest priority node from the queue
+            prevHighest->next = highestPriorityNode->next;
+            if (highestPriorityNode == rear) {
+                rear = prevHighest;
+            }
+        }
+
+        DataType value = highestPriorityNode->data;
+        delete highestPriorityNode;
+        std::cout << "Dequeue: " << value << std::endl;
+        return value;
+    }
+
+    DataType peek() {
+        if (isEmpty()) {
+            std::cout << "Peek failed: Queue is empty" << std::endl;
+            return DataType();
+        }
+
+        Node* current = front;
+        Node* highestPriorityNode = front;
+
+        // Find the highest priority element
+        while (current) {
+            if (current->priority > highestPriorityNode->priority) {
+                highestPriorityNode = current;
+            }
+            current = current->next;
+        }
+
+        return highestPriorityNode->data;
+    }
+
     bool isEmpty() {
-        return false;
+        return front == nullptr;
     }
-    void display() {}
+
+    void display() {
+        Node* current = front;
+        std::cout << "[";
+        while (current) {
+            std::cout << "(" << current->data << ", " << current->priority << ")";
+            current = current->next;
+            if (current) std::cout << ", ";
+        }
+        std::cout << "]\n";
+    }
 };
