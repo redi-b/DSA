@@ -304,7 +304,7 @@ class Deque {
         }
     }
     Type dequeueFront(bool log) {
-        const Type& value = dequeueFront(value);
+        const Type& value = dequeueFront();
 
         if (log) {
             std::cout << "Dequeue front: " << value << std::endl;
@@ -314,7 +314,7 @@ class Deque {
         return value;
     }
     Type dequeueRear(bool log) {
-        const Type& value = dequeueRear(value);
+        const Type& value = dequeueRear();
 
         if (log) {
             std::cout << "Dequeue rear: " << value << std::endl;
@@ -333,8 +333,8 @@ class PriorityQueue {
    public:
     PriorityQueue() {}
 
-    void enqueue(Type value, bool log = false) {}
-    Type dequeue(bool log = false) {
+    void enqueue(Type value) {}
+    Type dequeue() {
         return Type();
     }
     Type peek() {
@@ -343,5 +343,5 @@ class PriorityQueue {
     bool isEmpty() {
         return false;
     }
-    void displaye() {}
+    void display() {}
 };

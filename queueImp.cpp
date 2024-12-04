@@ -7,8 +7,7 @@ using namespace std;
 template <template <typename> class Queue, typename Type>
 void testQueue(Queue<Type>& queue);
 
-template <typename Type>
-void testDeque(Deque<Type>& queue);
+void testDeque(Deque<int>& queue);
 
 int main(int argc, char const *argv[]) {
     QueueAB<int> queueAB(4);
@@ -18,14 +17,15 @@ int main(int argc, char const *argv[]) {
 
     std::cout << "QUEUE TEST\n";
     testQueue(queueLLB);
-    // std::cout << "DEQUE TEST\n";
-    // testDeque(deque);
+    std::cout << "DEQUE TEST\n";
+    testDeque(deque);
 
     return 0;
 }
 
 template <template <typename> class Queue, typename Type>
 void testQueue(Queue<Type>& queue) {
+    queue.dequeue(true);
     queue.enqueue(4, true);
     queue.enqueue(6, true);
     queue.enqueue(-1, true);
@@ -36,8 +36,7 @@ void testQueue(Queue<Type>& queue) {
     queue.enqueue(1, true);
 }
 
-template <typename Type>
-void testDeque(Deque<Type>& queue) {
+void testDeque(Deque<int>& queue) {
     queue.enqueueFront(4, true);
     queue.enqueueFront(6, true);
     queue.enqueueFront(-1, true);
