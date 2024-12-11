@@ -164,6 +164,100 @@ class BSTree {
         std::cout << "\n";
     }
 
+    void deleteByMerging(Type value) {
+        BSTNode<Type>* node = root;
+        BSTNode<Type>* parent = nullptr;
+
+        while (node != nullptr && node->data != value) {
+            parent = node;
+            if (value < node->data)
+                node = node->left;
+            else
+                node = node->right;
+        }
+
+        if (node == nullptr) {
+            std::cout << "Value not found!\n";
+            return;
+        }
+
+        BSTNode<Type>* nodeToDelete = node;
+
+        if (node->left == nullptr)
+            node = node->right;
+        else if (node->right == nullptr)
+            node = node->left;
+        else {
+            BSTNode<Type>* leftSubtree = node->left;
+            BSTNode<Type>* rightSubtree = node->right;
+
+            BSTNode<Type>* rightmost = leftSubtree;
+            while (rightmost->right != nullptr)
+                rightmost = rightmost->right;
+
+            rightmost->right = rightSubtree;
+            node = leftSubtree;
+        }
+
+        if (parent == nullptr)
+            root = node;
+        else if (parent->left == nodeToDelete)
+            parent->left = node;
+        else
+            parent->right = node;
+
+        delete nodeToDelete;
+    }
+
+    void deleteByCopying(Type value) {
+        BSTNode<Type>* node = root;
+        BSTNode<Type>* parent = nullptr;
+
+        while (node != nullptr && node->data != value) {
+            parent = node;
+            if (value < node->data)
+                node = node->left;
+            else
+                node = node->right;
+        }
+
+        if (node == nullptr) {
+            std::cout << "Value not found!\n";
+            return;
+        }
+
+        BSTNode<Type>* nodeToDelete = node;
+
+        if (node->left == nullptr || node->right == nullptr) {
+            node = (node->left != nullptr) ? node->left : node->right;
+        } else {
+            BSTNode<Type>* successorParent = node;
+            BSTNode<Type>* successor = node->right;
+
+            while (successor->left != nullptr) {
+                successorParent = successor;
+                successor = successor->left;
+            }
+
+            node->data = successor->data;
+            if (successorParent->left == successor)
+                successorParent->left = successor->right;
+            else
+                successorParent->right = successor->right;
+
+            nodeToDelete = successor;
+        }
+
+        if (parent == nullptr)
+            root = node;
+        else if (parent->left == nodeToDelete)
+            parent->left = node;
+        else
+            parent->right = node;
+
+        delete nodeToDelete;
+    }
+
     void clear() {
         clearTree();
         root = nullptr;
