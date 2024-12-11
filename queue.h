@@ -1,4 +1,7 @@
 #include <iostream>
+#include <map>
+#include <vector>
+#include <algorithm>
 
 #include "linkedList.h"
 
@@ -334,7 +337,6 @@ struct PriorityNode {
     int priority;
     PriorityNode* next;
 
-    PriorityNode(DataType value) : data(value), priority(0), next(nullptr) {}
     PriorityNode(DataType value, int prio) : data(value), priority(prio), next(nullptr) {}
 };
 
@@ -357,7 +359,7 @@ class PriorityQueue {
     }
 
     void enqueue(DataType value) {
-        Node* newNode = new Node(value);
+        Node* newNode = new Node(value, 0);
         if (!rear) {
             front = rear = newNode;
             return;
@@ -412,8 +414,8 @@ class PriorityQueue {
         }
 
         DataType value = highestPriorityNode->data;
+        std::cout << "Dequeue: " << value << " (Priority: " << highestPriorityNode->priority << ")" << std::endl;
         delete highestPriorityNode;
-        std::cout << "Dequeue: " << value << std::endl;
         return value;
     }
 
@@ -447,7 +449,7 @@ class PriorityQueue {
         while (current) {
             std::cout << "(" << current->data << ", " << current->priority << ")";
             current = current->next;
-            if (current) std::cout << ", ";
+            if (current) std::cout << " <- ";
         }
         std::cout << "]\n";
     }

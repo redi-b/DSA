@@ -8,7 +8,8 @@ using namespace std;
 template <template <typename> class Queue>
 void testQueue(Queue<int>& queue);
 void testDeque(Deque<int>& queue);
-void testPQ(PriorityQueue<int>& queue);
+template <template <typename> class Queue>
+void testPQ(Queue<int>& queue);
 
 // Helper function
 void printTestTitle(string title);
@@ -19,6 +20,7 @@ int main(int argc, char const* argv[]) {
     CircularQueue<int> queueCirc(4);
     Deque<int> deque;
     PriorityQueue<int> priorityQueue;
+    PriorityQueueAB<int> priorityQueueAB(5);
 
     printTestTitle("Queue Test");
     testQueue(queueLLB);
@@ -26,6 +28,8 @@ int main(int argc, char const* argv[]) {
     testDeque(deque);
     printTestTitle("Priority Queue Test");
     testPQ(priorityQueue);
+    printTestTitle("Priority Queue Test (AB)");
+    testPQ(priorityQueueAB);
 
     return 0;
 }
@@ -54,13 +58,19 @@ void testDeque(Deque<int>& queue) {
     queue.enqueueRear(1, true);
 }
 
-void testPQ(PriorityQueue<int>& queue) {
-    queue.enqueue(10, 1);  // Value: 10, Priority: 1
-    queue.enqueue(20, 1);  // Value: 20, Priority: 3
+template <template <typename> class Queue>
+void testPQ(Queue<int>& queue) {
+    queue.enqueue(10);     // Value: 30, Priority: default (0)
+    queue.enqueue(20, 1);  // Value: 10, Priority: 1
+    queue.enqueue(40, 3);  // Value: 20, Priority: 3
     queue.enqueue(30, 2);  // Value: 30, Priority: 2
-    queue.enqueue(40, 3);  // Value: 40, Priority: 3
-    queue.enqueue(30, 1);  // Value: 30, Priority: 1
+    queue.enqueue(90, 5);  // Value: 40, Priority: 5
+    queue.enqueue(60, 4);  // Value: 30, Priority: 4
 
+    queue.display();
+    queue.dequeue();
+    queue.display();
+    queue.dequeue();
     queue.display();
     queue.dequeue();
     queue.display();
