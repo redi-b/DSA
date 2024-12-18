@@ -258,6 +258,38 @@ class BSTree {
         delete nodeToDelete;
     }
 
+    int getHeight(BSTNode<Type>* node) {
+        if (node == nullptr) {
+            return -1;
+        }
+
+        int leftHeight = height(node->left);
+        int rightHeight = height(node->right);
+
+        return 1 + std::max(leftHeight, rightHeight);
+    }
+
+    int getHeight() {
+        return height(root);
+    }
+
+    int getLevel(BSTNode<Type>* node, Type value, int level) {
+        if (node == nullptr)
+            return -1;
+
+        if (node->data == value)
+            return level;
+
+        if (value < node->data)
+            return getLevel(node->left, value, level + 1);
+
+        return getLevel(node->right, value, level + 1);
+    }
+
+    int getLevel(Type value) {
+        return getLevel(root, value, 0);
+    }
+
     void clear() {
         clearTree();
         root = nullptr;
