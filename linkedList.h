@@ -2,6 +2,7 @@
 
 #include <string.h>
 
+#include <functional>
 #include <iostream>
 #include <type_traits>
 #include <typeinfo>
@@ -252,6 +253,15 @@ class SinglyLinkedList : public LinkedList<Type> {
         std::cout << "] - (reverse)" << std::endl;
     }
 
+    // Traverse method to apply a callable to each element
+    void traverse(const std::function<void(Type)>& func) const {
+        SNode<Type>* current = head;
+        while (current != nullptr) {
+            func(current->data);
+            current = current->next;
+        }
+    }
+
     SNode<Type>* getHead() {
         return head;
     }
@@ -461,6 +471,24 @@ class DoublyLinkedList : public LinkedList<Type> {
             if (temp != nullptr) std::cout << " <--> ";
         }
         // std::cout << "] - (reverse)" << std::endl;
+    }
+
+    // Traverse method to apply a callable to each element
+    void traverseForward(const std::function<void(Type)>& func) const {
+        DNode<Type>* current = head;
+        while (current != nullptr) {
+            func(current->data);
+            current = current->next;
+        }
+    }
+
+    // Traverse method to apply a callable to each element
+    void traverseBackward(const std::function<void(Type)>& func) const {
+        DNode<Type>* current = tail;
+        while (current != nullptr) {
+            func(current->data);
+            current = current->prev;
+        }
     }
 
     DoublyLinkedList<Type>& operator=(std::initializer_list<Type> list) {
@@ -736,6 +764,11 @@ class CircularLinkedList : public LinkedList<Type> {
         if (arrowLen > 0) this->printCircularArrow(arrowLen, true);
     }
 
+    // Traverse method to apply a callable to each element
+    void traverse(const std::function<void(Type)>& func) const {
+        // TODO: implement
+    }
+
     CircularLinkedList<Type>& operator=(std::initializer_list<Type> list) {
         this->clear();
         this->tail = nullptr;
@@ -1002,5 +1035,15 @@ class CircularDoublyLinkedList : public LinkedList<Type> {
         std::cout << "] - (reverse)" << std::endl;
 
         if (arrowLen > 0) this->printCircularArrowBottom(arrowLen, true);
+    }
+
+    // Traverse method to apply a callable to each element
+    void traverseForward(const std::function<void(Type)>& func) const {
+        // TODO: implement
+    }
+
+    // Traverse method to apply a callable to each element
+    void traverseBackward(const std::function<void(Type)>& func) const {
+        // TODO: implement
     }
 };
